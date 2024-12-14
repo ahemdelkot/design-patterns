@@ -10,6 +10,7 @@ import java.io.*;
 public class HowToPlay extends JFrame {
   public HowToPlay() {
     HowToPlayEventListener listener = new HowToPlayEventListener();
+    Timer timerListener = new Timer();
     GLCanvas glcanvas = new GLCanvas();
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
