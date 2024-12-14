@@ -1,6 +1,10 @@
 import javax.media.opengl.*;
 import javax.swing.*;
 import com.sun.opengl.util.*;
+
+import GameObjects.Ball;
+import GameObjects.Hand;
+
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
@@ -48,7 +52,8 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
-  Ball ball, hand1, hand2;
+  Ball ball;
+  GameObjects.Hand hand1, hand2;
   boolean pressed;
 
   @Override
@@ -81,9 +86,9 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    ball  = new Ball(textures, 38, 0, 0, gl);
-    hand1 = new Ball(textures, 39, 440, 0, gl);
-    hand2 = new Ball(textures, 39, -440, 0, gl);
+    ball  = new Ball(textures[38], 0, 0, gl);
+    hand1 = new GameObjects.Hand(textures[39], 440, 0, gl);
+    hand2 = new GameObjects.Hand(textures[39], -440, 0, gl);
   }
 
   @Override
@@ -104,9 +109,10 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     draw(37, 0, 0, 1200, 700);
   }
 
-  private void draw(int index, double x, double y) {
-    draw(index, x, y, 40, 40);
-  }
+  // ? this method to draw the character
+  // private void draw(int index, double x, double y) {
+  //   draw(index, x, y, 40, 40);
+  // }
 
   public void draw(int index, double x, double y, double width, double height) {
     gl.glEnable(GL.GL_BLEND);
@@ -124,10 +130,6 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
-  }
-
-  private void color(float r, float g, float b) {
-    gl.glColor3f(r / 255, g / 255, b / 255);
   }
 
   @Override

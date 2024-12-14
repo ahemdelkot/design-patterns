@@ -6,10 +6,11 @@
   "configurations": [
     {
       "type": "java",
-      "name": "Current File",
+      "name": "App",
       "request": "launch",
-      "mainClass": "${file}",
-      "vmArgs": "-Djava.library.path=lib/JOGL"
+      "mainClass": "App",
+      "projectName": "airHockey-game_e184d464",
+      "vmArgs": "-Djava.library.path=lib\\JOGL"
     }
   ]
 }

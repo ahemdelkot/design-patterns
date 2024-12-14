@@ -1,6 +1,6 @@
 import javax.media.opengl.*;
 import javax.swing.*;
-import com.sun.opengl.util.*;
+// import com.sun.opengl.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
@@ -10,7 +10,6 @@ import java.io.*;
 public class HowToPlay extends JFrame {
   public HowToPlay() {
     HowToPlayEventListener listener = new HowToPlayEventListener();
-    Timer timerListener = new Timer();
     GLCanvas glcanvas = new GLCanvas();
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
@@ -78,12 +77,12 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
 
   @Override
   public void display(GLAutoDrawable arg0) {
-    color(255, 250, 255);
-    gl.glLineWidth(5);
-    gl.glBegin(GL.GL_LINES);
-    gl.glVertex2d(0, 350);
-    gl.glVertex2d(0, -350);
-    gl.glEnd();
+    // color(255, 250, 255);
+    // gl.glLineWidth(5);
+    // gl.glBegin(GL.GL_LINES);
+    // gl.glVertex2d(0, 350);
+    // gl.glVertex2d(0, -350);
+    // gl.glEnd();
 
     String heading = "how to play";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
@@ -121,11 +120,9 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     gl.glDisable(GL.GL_BLEND);
   }
 
-
-  private void color(float r, float g, float b) {
-    gl.glColor3f(r / 255, g / 255, b / 255);
-  }
-
+  // private void color(float r, float g, float b) {
+  //   gl.glColor3f(r / 255, g / 255, b / 255);
+  // }
 
   @Override
   public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
@@ -175,11 +172,11 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     windowWidth = e.getComponent().getWidth();
   }
 
-  private double convertX(double x) {
-    return x * (2 * orthoX) / windowWidth - orthoX;
-  }
+  // private double convertX(double x) {
+  //   return x * (2 * orthoX) / windowWidth - orthoX;
+  // }
 
-  private double convertY(double y) {
-    return orthoY - 2 * orthoY / windowHight * y;
-  }
+  // private double convertY(double y) {
+  //   return orthoY - 2 * orthoY / windowHight * y;
+  // }
 }
