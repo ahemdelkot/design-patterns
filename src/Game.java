@@ -7,19 +7,19 @@ import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
 
-public class HowToPlay extends JFrame {
-  public HowToPlay() {
-    HowToPlayEventListener listener = new HowToPlayEventListener();
-    Timer timerListener = new Timer();
+public class Game extends JFrame {
+  public Game() {
+    GameEventListener listener = new GameEventListener();
     GLCanvas glcanvas = new GLCanvas();
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
+    glcanvas.addMouseMotionListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
-    // ! Animator animator = new FPSAnimator(15);
-    // ! animator.add(glcanvas);
-    // ! animator.start();
+    Animator animator = new FPSAnimator(60);
+    animator.add(glcanvas);
+    animator.start();
 
-    setTitle("How to Play");
+    setTitle("Game");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(1200, 700); // ! set size of the window
     setLocationRelativeTo(null);
@@ -29,26 +29,32 @@ public class HowToPlay extends JFrame {
   }
 }
 
-class HowToPlayEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class GameEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+
   /*
    * // ? number from 0 to 9
    * // ? letter from 10 to 35
-   * // ? how to play in 36
-  */
+   * // ? how to play instruction in index 36
+   * // ? background in index 37
+   * // ? ball in index 38
+   * // ? hand in index 39
+   */
   final static String ASSETS_PATH = "Assets\\Letters";
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
+  // boolean[] action = {true};
 
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
-
+  Ball ball, hand1, hand2;
+  boolean pressed;
 
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
-    gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // This Will Clear The Background Color To Black
+    gl.glClearColor(0, 0, 0, 1); // This Will Clear The Background Color To Black
     gl.glOrtho(-orthoX, orthoX, -orthoY, orthoY, -1, 1); // setting the orth and the coordinates of the window
 
     gl.glEnable(GL.GL_TEXTURE_2D); // Enable Texture Mapping
@@ -74,36 +80,35 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
         e.printStackTrace();
       }
     }
+    
+    ball  = new Ball(textures, 38, 0, 0, gl);
+    hand1 = new Ball(textures, 39, 440, 0, gl);
+    hand2 = new Ball(textures, 39, -440, 0, gl);
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
-    color(255, 250, 255);
-    gl.glLineWidth(5);
-    gl.glBegin(GL.GL_LINES);
-    gl.glVertex2d(0, 350);
-    gl.glVertex2d(0, -350);
-    gl.glEnd();
+    gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+    drawBackground();
+    ball.draw();
+    hand1.draw();
+    hand2.draw();
 
-    String heading = "how to play";
-    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
-      char ch = heading.charAt(i);
-      if(ch != ' '){
-        draw(ch - 'a' + 10, x, y);
-      }
-      
-      x += 40;
+    if(Ball.collides(ball, hand1)) {
+      System.out.println("collides");
+      ball.method(hand1.x, hand2.x);
     }
-
-    draw(36, 0, -50, 1100, 520);
   }
 
-  private void draw(int index, double x, double y){
+  public void drawBackground() {
+    draw(37, 0, 0, 1200, 700);
+  }
+
+  private void draw(int index, double x, double y) {
     draw(index, x, y, 40, 40);
   }
 
   public void draw(int index, double x, double y, double width, double height) {
-    // draw the character 
     gl.glEnable(GL.GL_BLEND);
     gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]); // Turn Blending On
 
@@ -121,23 +126,18 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     gl.glDisable(GL.GL_BLEND);
   }
 
-
   private void color(float r, float g, float b) {
     gl.glColor3f(r / 255, g / 255, b / 255);
   }
 
-
   @Override
-  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
-
-  @Override
-  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
-
-  @Override
-  public void mouseClicked(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
+  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
   }
+
+  @Override
+  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+  }
+
 
   @Override
   public void mouseEntered(MouseEvent e) {
@@ -150,29 +150,48 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
   }
+  
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+
+    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+  }
 
   @Override
   public void mousePressed(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+
+    pressed = true;
+    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
+    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
   }
 
   @Override
   public void mouseReleased(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+    pressed = false;
   }
 
   @Override
   public void mouseDragged(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+
+    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
+    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
   }
 
   @Override
   public void mouseMoved(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+
+    if(!pressed) return;
+    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   private double convertX(double x) {
@@ -180,6 +199,6 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
   }
 
   private double convertY(double y) {
-    return orthoY - 2 * orthoY / windowHight * y;
+    return orthoY - (2 * orthoY) / windowHight * y;
   }
 }
