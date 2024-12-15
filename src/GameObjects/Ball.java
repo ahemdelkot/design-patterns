@@ -55,10 +55,9 @@ public class Ball extends GameObjects {
     }
     if (super.y >= 280 || super.y <= -280) dy = -dy;
     
-    // if(flag) return;
     double d1 = GameObjects.distance(this, hand1);
     double d2 = GameObjects.distance(this, hand2);
-    if (d1 <= 80 /*|| d2 <= 80*/) {
+    if (d1 <= 80 || d2 <= 80) {
       dy = -dy;
       dx = -dx;
     }
