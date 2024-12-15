@@ -3,60 +3,69 @@ package GameObjects;
 import javax.media.opengl.*;
 
 public class Ball extends GameObjects {
-  private double m, dx, dy = m * dx;
-  private boolean move;
+  public double m = 1, dx = 2 * 0, dy = m * dx;
+  private boolean move = true;
   private Hand hand1;
+  private Hand hand2;
+  boolean flag;
 
-  public Ball(int textureIndex, int x, int y, Hand hand1, GL gl) {
+  public Ball(int textureIndex, int x, int y, Hand hand1, Hand hand2, GL gl) {
     super(textureIndex, x, y, gl);
     this.hand1 = hand1;
+    this.hand2 = hand2;
+    hand1.ball = this;
+    hand2.ball = this;
   }
 
   public void draw() {
     super.draw();
+    checkCollapse();
     checkCollide();
     move();
-  }
-
-  private void checkCollide() {
-    if (x >= 530 || x <= -530)
-      dx = -dx;
-    if (y >= 280 || y <= -280)
-      dy = -dy;
-
-    if(GameObjects.collides(this, hand1)){
-      dy = -dy;
-      dx = -dx;
-    }
-  }
-
-  public void method(double thatX, double thatY) {
-    // System.out.println("method");
-    move = true;
-    // m = (thatY - this.y) / (thatX - this.x);
-
-    if (thatX > this.x + 40 || thatX < this.x - 40) {
-      m = (thatX - this.x) / (thatY - this.y);
-      dx = thatX > this.x ? -5 : 5;
-      dy = m * dx;
-    } else if (thatY < this.y - 40) {
-      m = (thatY - this.y) / (thatX - this.x);
-      dy = thatY > this.y ? 5 : -5;
-      dx = dy / m;
-    } else {
-      m = (thatY - this.y) / (thatX - this.x);
-      dy = thatY > this.y ? -5 : 5;
-      dx = dy / m;
-    }
-
-    System.out.println(m);
   }
 
   public void move() {
     if (!this.move)
       return;
 
-    x += dx;
-    y += dy;
+    super.x += dx;
+    super.y += dy;
+  }
+
+  private void checkCollide() {
+    
+    if (super.x >= 530 || super.x <= -530){
+      if (y > 135 || y < -90) {
+        dx = -dx;
+      }
+      if(x > 640){
+        x = 90;
+        y = 0;
+        // move = false;
+        hand2.score++;
+        System.out.println(hand1.score + " " + hand2.score);
+      } 
+      else if(x < -640){
+        x = -90;
+        y = 0;
+        // move = false;
+        hand1.score++;
+        System.out.println(hand1.score + " " + hand2.score);
+      } 
+    }
+    if (super.y >= 280 || super.y <= -280) dy = -dy;
+    
+    // if(flag) return;
+    double d1 = GameObjects.distance(this, hand1);
+    double d2 = GameObjects.distance(this, hand2);
+    if (d1 <= 80 /*|| d2 <= 80*/) {
+      dy = -dy;
+      dx = -dx;
+    }
+  }
+
+  public void checkCollapse(){
+    if(distance(this, hand1) <= 75)
+      flag = true;
   }
 }
