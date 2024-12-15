@@ -89,15 +89,13 @@ class TimerEventListener implements GLEventListener {
     if (idx3 > 9) {
       idx4++;
     }
-    // gl.glPushMatrix();
-    // gl.glScaled(0.1, 0.1, 1);
+    
     Draw(gl, 0, 0, 10);
     Draw(gl, 0, 0.2, 10);
     Draw(gl, 0.4, 0.1, idx1);
     Draw(gl, 0.2, 0.1, idx2);
     Draw(gl, -0.2, 0.1, idx3);
     Draw(gl, -0.4, 0.1, idx4);
-    // gl.glPopMatrix();
   }
 
   public void Draw(GL gl, double x, double y, int idx) {

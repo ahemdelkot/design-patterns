@@ -6,7 +6,6 @@ import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
-import javax.swing.text.Highlighter;
 
 public class HowToPlay extends JFrame {
   public HowToPlay() {
@@ -40,7 +39,7 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
   ///////////////////////////
-  HighScore sc;
+  HighScores2 sc;
   ///////////////////////////
 
 
@@ -80,7 +79,7 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     }
 
     try {
-      sc = new HighScore(gl, textures);
+      sc = new HighScores2(gl, textures);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
