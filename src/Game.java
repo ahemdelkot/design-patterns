@@ -1,11 +1,16 @@
 import javax.media.opengl.*;
 import javax.swing.*;
 import com.sun.opengl.util.*;
+
+import GameObjects.Ball;
+import GameObjects.Hand;
+
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import java.util.BitSet;
 
 public class Game extends JFrame {
   public Game() {
@@ -14,6 +19,7 @@ public class Game extends JFrame {
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
     glcanvas.addMouseMotionListener(listener);
+    glcanvas.addKeyListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
     Animator animator = new FPSAnimator(60);
     animator.add(glcanvas);
@@ -29,7 +35,7 @@ public class Game extends JFrame {
   }
 }
 
-class GameEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class GameEventListener implements GLEventListener, MouseMotionListener, MouseListener, KeyListener {
 
   /*
    * // ? number from 0 to 9
@@ -48,7 +54,8 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
-  Ball ball, hand1, hand2;
+  Ball ball;
+  Hand handRight, handLeft;
   boolean pressed;
 
   @Override
@@ -81,32 +88,29 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    ball  = new Ball(textures, 38, 0, 0, gl);
-    hand1 = new Ball(textures, 39, 440, 0, gl);
-    hand2 = new Ball(textures, 39, -440, 0, gl);
+    handRight = new Hand(textures[39], 440, 0, true, gl);
+    handLeft = new Hand(textures[39], -440, 0, false, gl);
+    ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     drawBackground();
+    handleKeyPress();
+    handRight.draw();
+    handLeft.draw();
     ball.draw();
-    hand1.draw();
-    hand2.draw();
-
-    if(Ball.collides(ball, hand1)) {
-      System.out.println("collides");
-      ball.method(hand1.x, hand2.x);
-    }
   }
 
   public void drawBackground() {
     draw(37, 0, 0, 1200, 700);
   }
 
-  private void draw(int index, double x, double y) {
-    draw(index, x, y, 40, 40);
-  }
+  // ? this method to draw the character
+  // private void draw(int index, double x, double y) {
+  //   draw(index, x, y, 40, 40);
+  // }
 
   public void draw(int index, double x, double y, double width, double height) {
     gl.glEnable(GL.GL_BLEND);
@@ -124,10 +128,6 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
-  }
-
-  private void color(float r, float g, float b) {
-    gl.glColor3f(r / 255, g / 255, b / 255);
   }
 
   @Override
@@ -156,7 +156,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
 
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
   }
 
   @Override
@@ -165,8 +165,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowWidth = e.getComponent().getWidth();
 
     pressed = true;
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   @Override
@@ -181,8 +180,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
 
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   @Override
@@ -191,7 +189,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowWidth = e.getComponent().getWidth();
 
     if(!pressed) return;
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   private double convertX(double x) {
@@ -200,5 +198,57 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
 
   private double convertY(double y) {
     return orthoY - (2 * orthoY) / windowHight * y;
+  }
+
+  BitSet keyBits = new BitSet(256);
+
+  @Override
+  public void keyPressed(final KeyEvent event) {
+    int keyCode = event.getKeyCode();
+    keyBits.set(keyCode);
+  }
+
+  @Override
+  public void keyReleased(final KeyEvent event) {
+    int keyCode = event.getKeyCode();
+    keyBits.clear(keyCode);
+  }
+
+  @Override
+  public void keyTyped(final KeyEvent event) {}
+
+  public boolean isKeyPressed(final int keyCode) {
+    return keyBits.get(keyCode);
+  }
+
+  public void handleKeyPress() {
+
+    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+      handRight.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+      handRight.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_UP)) {
+      handRight.move(0, 10); 
+    }
+    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+      handRight.move(0, -10);
+    }
+
+
+    if (isKeyPressed(KeyEvent.VK_A)) {
+      handLeft.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_D)) {
+      handLeft.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_W)) {
+      handLeft.move(0, 10);
+    }
+    if (isKeyPressed(KeyEvent.VK_S)) {
+      handLeft.move(0, -10);
+    }
+    
   }
 }

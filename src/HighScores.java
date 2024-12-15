@@ -1,14 +1,12 @@
 import javax.media.opengl.*;
 import javax.swing.*;
-import com.sun.opengl.util.*;
+// import com.sun.opengl.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class HighScores extends JFrame {
   public HighScores() {
@@ -117,42 +115,6 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
     gl.glDisable(GL.GL_BLEND);
   }
 
-  private void printScores(){
-    String heading = "high scores";
-    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
-      char ch = heading.charAt(i);
-      if(ch != ' '){
-        draw(ch - 'a' + 10, x, y);
-      }
-      
-      x += 40;
-    }
-
-    for (int i = 0, y = 150; i < scores.size(); i++) {
-      // for name printing names
-      String name = scores.get(i).name;
-      for (int j = 0, x = -240; j < name.length(); j++){
-        char ch = name.charAt(j);
-        draw(ch - 'a' + 10, x, y);
-        x += 40;
-      }
-      
-      // for score printing score
-      String score = scores.get(i).score;
-      for (int j = score.length() - 1, x = 240; j >= 0; j--){
-        char ch = score.charAt(j);
-        draw(ch - '0', x, y);
-        x -= 40;
-      }
-      y -= 60;
-    }
-  }
-
-  private void color(float r, float g, float b) {
-    gl.glColor3f(r / 255, g / 255, b / 255);
-  }
-
-
   @Override
   public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
 
@@ -201,18 +163,49 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
     windowWidth = e.getComponent().getWidth();
   }
 
-  private double convertX(double x) {
-    return x * (2 * orthoX) / windowWidth - orthoX;
-  }
+  // private double convertX(double x) {
+  //   return x * (2 * orthoX) / windowWidth - orthoX;
+  // }
 
-  private double convertY(double y) {
-    return orthoY - 2 * orthoY / windowHight * y;
-  }
+  // private double convertY(double y) {
+  //   return orthoY - 2 * orthoY / windowHight * y;
+  // }
 
   private void getScores() throws FileNotFoundException {
     Scanner in = new Scanner(new File("data\\score.txt"));
     while (in.hasNext()) {
       scores.add(new Score(in.next(), in.next()));
     }in.close();
+  }
+  
+  private void printScores(){
+    String heading = "high scores";
+    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
+      char ch = heading.charAt(i);
+      if(ch != ' '){
+        draw(ch - 'a' + 10, x, y);
+      }
+      
+      x += 40;
+    }
+
+    for (int i = 0, y = 150; i < scores.size(); i++) {
+      // for name printing names
+      String name = scores.get(i).name;
+      for (int j = 0, x = -240; j < name.length(); j++){
+        char ch = name.charAt(j);
+        draw(ch - 'a' + 10, x, y);
+        x += 40;
+      }
+      
+      // for score printing score
+      String score = scores.get(i).score;
+      for (int j = score.length() - 1, x = 240; j >= 0; j--){
+        char ch = score.charAt(j);
+        draw(ch - '0', x, y);
+        x -= 40;
+      }
+      y -= 60;
+    }
   }
 }
