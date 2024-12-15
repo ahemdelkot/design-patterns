@@ -10,6 +10,7 @@ import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import java.util.BitSet;
 
 public class Game extends JFrame {
   public Game() {
@@ -18,6 +19,7 @@ public class Game extends JFrame {
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
     glcanvas.addMouseMotionListener(listener);
+    glcanvas.addKeyListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
     Animator animator = new FPSAnimator(60);
     animator.add(glcanvas);
@@ -33,7 +35,7 @@ public class Game extends JFrame {
   }
 }
 
-class GameEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class GameEventListener implements GLEventListener, MouseMotionListener, MouseListener, KeyListener {
 
   /*
    * // ? number from 0 to 9
@@ -53,7 +55,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
   Ball ball;
-  Hand hand1, hand2;
+  Hand handRight, handLeft;
   boolean pressed;
 
   @Override
@@ -86,23 +88,18 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    hand1 = new Hand(textures[39], 440, 0, gl);
-    hand2 = new Hand(textures[39], -440, 0, gl);
-    ball  = new Ball(textures[38], 0, 0, hand1, gl);
+    handRight = new Hand(textures[39], 440, 0, gl);
+    handLeft = new Hand(textures[39], -440, 0, gl);
+    ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     drawBackground();
+    handRight.draw();
+    handLeft.draw();
     ball.draw();
-    hand1.draw();
-    hand2.draw();
-
-    if(Ball.collides(ball, hand1)) {
-      System.out.println("collides");
-      ball.method(hand1.x, hand2.x);
-    }
   }
 
   public void drawBackground() {
@@ -158,7 +155,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
 
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
   }
 
   @Override
@@ -167,8 +164,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowWidth = e.getComponent().getWidth();
 
     pressed = true;
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   @Override
@@ -183,8 +179,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
 
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
-    // ! System.out.println(convertX(e.getX()) + " " + convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   @Override
@@ -193,7 +188,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     windowWidth = e.getComponent().getWidth();
 
     if(!pressed) return;
-    hand1.moveTo(convertX(e.getX()), convertY(e.getY()));
+    handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
   private double convertX(double x) {
@@ -202,5 +197,58 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
 
   private double convertY(double y) {
     return orthoY - (2 * orthoY) / windowHight * y;
+  }
+
+  BitSet keyBits = new BitSet(256);
+  @Override
+  public void keyPressed(final KeyEvent event) {
+    int keyCode = event.getKeyCode();
+    keyBits.set(keyCode);
+  }
+
+  @Override
+  public void keyReleased(final KeyEvent event) {
+    int keyCode = event.getKeyCode();
+    keyBits.clear(keyCode);
+  }
+
+  @Override
+  public void keyTyped(final KeyEvent event) {
+    handleKeyPress();
+  }
+
+  public boolean isKeyPressed(final int keyCode) {
+    return keyBits.get(keyCode);
+  }
+
+  public void handleKeyPress() {
+
+    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+      handRight.x -= 10;  
+    }
+    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+      handRight.x += 10; 
+    }
+    if (isKeyPressed(KeyEvent.VK_UP)) {
+      handRight.y += 10; 
+    }
+    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+      handRight.y -= 10;
+    }
+
+
+    if (isKeyPressed(KeyEvent.VK_A)) {
+      handLeft.x -= 10;  
+    }
+    if (isKeyPressed(KeyEvent.VK_D)) {
+      handLeft.x += 10; 
+    }
+    if (isKeyPressed(KeyEvent.VK_W)) {
+      handLeft.y += 10; 
+    }
+    if (isKeyPressed(KeyEvent.VK_S)) {
+      handLeft.y -= 10;
+    }
+    
   }
 }
