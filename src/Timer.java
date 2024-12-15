@@ -1,13 +1,40 @@
-
-import Texture.TextureReader;
-
-import java.awt.event.*;
-import java.io.IOException;
 import javax.media.opengl.*;
-import java.util.*;
-import javax.media.opengl.glu.GLU;
+import javax.swing.*;
+import com.sun.opengl.util.*;
 
-public class Timer implements GLEventListener {
+import GameObjects.Ball;
+import GameObjects.Hand;
+
+import java.awt.*;
+import java.awt.event.*;
+import Texture.TextureReader;
+import javax.media.opengl.glu.GLU;
+import java.io.*;
+import java.util.BitSet;
+
+
+public class Timer extends JFrame {
+  public Timer() {
+    TimerEventListener listener = new TimerEventListener();
+    GLCanvas glcanvas = new GLCanvas();
+    glcanvas.addGLEventListener(listener);
+    getContentPane().add(glcanvas, BorderLayout.CENTER);
+    Animator animator = new FPSAnimator(60);
+    animator.add(glcanvas);
+    animator.start();
+
+    setTitle("Game");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setSize(1200, 700); // ! set size of the window
+    setLocationRelativeTo(null);
+    setVisible(true);
+    setFocusable(true);
+    glcanvas.requestFocus();
+  }
+}
+
+
+class TimerEventListener implements GLEventListener {
 
   String textureNames[] = { "00.png", "01.png", "02.png", "03.png", "04.png", "05.png", "06.png", "07.png", "08.png","09.png", "..png" };
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
@@ -39,7 +66,7 @@ public class Timer implements GLEventListener {
   }
 
   int timer = 0;
-  double idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
+  int idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
 
   public void display(GLAutoDrawable gld) {
     this.gl = gld.getGL();
@@ -47,7 +74,7 @@ public class Timer implements GLEventListener {
     timer++;
     gl.glLoadIdentity();
     // when timer get the animator fps it's increment the seconds by 1
-    if (timer >= 30) {
+    if (timer >= 60) {
       idx1++;
       timer = 0;
     }
@@ -62,18 +89,15 @@ public class Timer implements GLEventListener {
     if (idx3 > 9) {
       idx4++;
     }
-    // if (idx4 > 43){
-    // idx2++;
-    // }
-    gl.glPushMatrix();
-    gl.glScaled(0.1, 0.1, 1);
+    // gl.glPushMatrix();
+    // gl.glScaled(0.1, 0.1, 1);
     Draw(gl, 0, 0, 10);
     Draw(gl, 0, 0.2, 10);
-    Draw(gl, 0.4, 0.1, (int) idx1);
-    Draw(gl, 0.2, 0.1, (int) idx2);
-    Draw(gl, -0.2, 0.1, (int) idx3);
-    Draw(gl, -0.4, 0.1, (int) idx4);
-    gl.glPopMatrix();
+    Draw(gl, 0.4, 0.1, idx1);
+    Draw(gl, 0.2, 0.1, idx2);
+    Draw(gl, -0.2, 0.1, idx3);
+    Draw(gl, -0.4, 0.1, idx4);
+    // gl.glPopMatrix();
   }
 
   public void Draw(GL gl, double x, double y, int idx) {
