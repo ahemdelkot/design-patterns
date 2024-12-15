@@ -1,17 +1,33 @@
 package GameObjects;
+
 import javax.media.opengl.*;
 
-public class Ball extends GameObjects{
-  double m, dx, dy = m * dx;
-  boolean move;
+public class Ball extends GameObjects {
+  private double m, dx, dy = m * dx;
+  private boolean move;
+  private Hand hand1;
 
-  public Ball(int textureIndex, int x, int y, GL gl) {
+  public Ball(int textureIndex, int x, int y, Hand hand1, GL gl) {
     super(textureIndex, x, y, gl);
+    this.hand1 = hand1;
   }
 
   public void draw() {
     super.draw();
+    checkCollide();
     move();
+  }
+
+  private void checkCollide() {
+    if (x >= 530 || x <= -530)
+      dx = -dx;
+    if (y >= 280 || y <= -280)
+      dy = -dy;
+
+    if(GameObjects.collides(this, hand1)){
+      dy = -dy;
+      dx = -dx;
+    }
   }
 
   public void method(double thatX, double thatY) {
@@ -42,14 +58,5 @@ public class Ball extends GameObjects{
 
     x += dx;
     y += dy;
-
-    if (x >= 530 || x <= -530)
-      dx = -dx;
-    if (y >= 280 || y <= -280)
-      dy = -dy;
-  }
-
-  public static boolean collides(Ball ball1, Ball ball2) {
-    return Math.abs(ball1.x - ball2.x) <= 70 && Math.abs(ball1.y - ball2.y) <= 70;
   }
 }
