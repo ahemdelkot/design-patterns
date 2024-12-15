@@ -4,8 +4,8 @@ public class App {
 
 
     HighScores highScores = new HighScores();
-    // new HowToPlay();
-    new Game();
+    new HowToPlay();
+    // new Game();
     // Timer timer = new Timer();
     // System.out.println("shit");
     // new HighScore();
