@@ -26,7 +26,7 @@ public class Game extends JFrame {
     animator.start();
 
     setTitle("Game");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//sief
     setSize(1200, 700); // ! set size of the window
     setLocationRelativeTo(null);
     setVisible(true);
