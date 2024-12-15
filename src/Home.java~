@@ -208,7 +208,7 @@ public void display(GLAutoDrawable arg0) {
 
                 }
             }
-        } else if (flag == 3 || flag == 4||flag == 1||flag == 2) {
+        } else if (flag == 3 || flag == 4) {
             {
                 if (mouseX > -600 && mouseX < -550) {
                     if (mouseY > 250 && mouseY < 350) {

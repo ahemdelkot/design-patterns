@@ -37,7 +37,7 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
   final static String ASSETS_PATH = "Assets\\Letters";
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
-  final int textures[] = new int[textureNames.length];
+   int textures[] = new int[textureNames.length];
   ///////////////////////////
   HighScores2 sc;
   ///////////////////////////
@@ -46,8 +46,6 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
-
-
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable

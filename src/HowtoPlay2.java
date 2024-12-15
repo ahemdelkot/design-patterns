@@ -5,17 +5,19 @@ import java.io.*;
 // import java.awt.*;
 // import java.awt.event.*;
 
-public class HowToPlay2 {
+public class HowtoPlay2{
   int index;
   int textures[];
   GL gl;
 
-  public HowToPlay2(int[] textures, int index) throws FileNotFoundException {
+  public HowtoPlay2(int[] textures, int index,GL gl) throws FileNotFoundException {
     this.textures = textures;
     this.index = index;
+    this.gl=gl;
   }
 
   public void draw() {
+    gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     String heading = "how to play";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
       char ch = heading.charAt(i);
@@ -27,6 +29,8 @@ public class HowToPlay2 {
     }
 
     draw(36, 0, -50, 1100, 520);
+    //back button
+    draw(37, -575, 325,50 , 50);
   }
 
   private void draw(int index, double x, double y) {
@@ -35,6 +39,7 @@ public class HowToPlay2 {
 
   private void draw(int index, double x, double y, double width, double height) {
     // draw the character
+    gl.glColor3f(1,1,1);
     gl.glEnable(GL.GL_BLEND);
     gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]); // Turn Blending On
 
@@ -51,5 +56,4 @@ public class HowToPlay2 {
 
     gl.glDisable(GL.GL_BLEND);
   }
-
 }
