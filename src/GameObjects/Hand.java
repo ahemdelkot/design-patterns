@@ -2,7 +2,7 @@ package GameObjects;
 import javax.media.opengl.*;
 
 public class Hand extends GameObjects{
-  Hand(int textureIndex, double x, double y, GL gl){
+  public Hand(int textureIndex, double x, double y, GL gl){
     super(textureIndex, x, y, gl);
   }
 
