@@ -53,7 +53,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
   Ball ball;
-  GameObjects.Hand hand1, hand2;
+  Hand hand1, hand2;
   boolean pressed;
 
   @Override
@@ -86,9 +86,9 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    ball  = new Ball(textures[38], 0, 0, gl);
-    hand1 = new GameObjects.Hand(textures[39], 440, 0, gl);
-    hand2 = new GameObjects.Hand(textures[39], -440, 0, gl);
+    hand1 = new Hand(textures[39], 440, 0, gl);
+    hand2 = new Hand(textures[39], -440, 0, gl);
+    ball  = new Ball(textures[38], 0, 0, hand1, gl);
   }
 
   @Override

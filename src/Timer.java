@@ -42,9 +42,9 @@ public class Timer implements GLEventListener {
   double idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
 
   public void display(GLAutoDrawable gld) {
-    timer++;
     this.gl = gld.getGL();
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+    timer++;
     gl.glLoadIdentity();
     // when timer get the animator fps it's increment the seconds by 1
     if (timer >= 30) {

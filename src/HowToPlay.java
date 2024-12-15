@@ -6,6 +6,7 @@ import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import javax.swing.text.Highlighter;
 
 public class HowToPlay extends JFrame {
   public HowToPlay() {
@@ -38,6 +39,10 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
+  ///////////////////////////
+  HighScore sc;
+  ///////////////////////////
+
 
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
@@ -73,6 +78,12 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
         e.printStackTrace();
       }
     }
+
+    try {
+      sc = new HighScore(gl, textures);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -94,7 +105,8 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
       x += 40;
     }
 
-    draw(36, 0, -50, 1100, 520);
+    sc.printScores();
+
   }
 
   private void draw(int index, double x, double y){
