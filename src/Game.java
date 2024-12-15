@@ -88,8 +88,8 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    handRight = new Hand(textures[39], 440, 0, gl);
-    handLeft = new Hand(textures[39], -440, 0, gl);
+    handRight = new Hand(textures[39], 440, 0, true, gl);
+    handLeft = new Hand(textures[39], -440, 0, false, gl);
     ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
   }
 
@@ -97,6 +97,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void display(GLAutoDrawable arg0) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     drawBackground();
+    handleKeyPress();
     handRight.draw();
     handLeft.draw();
     ball.draw();
@@ -200,6 +201,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   BitSet keyBits = new BitSet(256);
+
   @Override
   public void keyPressed(final KeyEvent event) {
     int keyCode = event.getKeyCode();
@@ -213,9 +215,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   @Override
-  public void keyTyped(final KeyEvent event) {
-    handleKeyPress();
-  }
+  public void keyTyped(final KeyEvent event) {}
 
   public boolean isKeyPressed(final int keyCode) {
     return keyBits.get(keyCode);
@@ -224,30 +224,30 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void handleKeyPress() {
 
     if (isKeyPressed(KeyEvent.VK_LEFT)) {
-      handRight.x -= 10;  
+      handRight.move(-10, 0);
     }
     if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-      handRight.x += 10; 
+      handRight.move(10, 0);
     }
     if (isKeyPressed(KeyEvent.VK_UP)) {
-      handRight.y += 10; 
+      handRight.move(0, 10); 
     }
     if (isKeyPressed(KeyEvent.VK_DOWN)) {
-      handRight.y -= 10;
+      handRight.move(0, -10);
     }
 
 
     if (isKeyPressed(KeyEvent.VK_A)) {
-      handLeft.x -= 10;  
+      handLeft.move(-10, 0);
     }
     if (isKeyPressed(KeyEvent.VK_D)) {
-      handLeft.x += 10; 
+      handLeft.move(10, 0);
     }
     if (isKeyPressed(KeyEvent.VK_W)) {
-      handLeft.y += 10; 
+      handLeft.move(0, 10);
     }
     if (isKeyPressed(KeyEvent.VK_S)) {
-      handLeft.y -= 10;
+      handLeft.move(0, -10);
     }
     
   }
