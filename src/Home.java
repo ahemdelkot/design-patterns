@@ -30,7 +30,7 @@ public class Home extends JFrame {
         setFocusable(true);
         glcanvas.requestFocus();
         // Play background music or sound effect
-        playSound("C:\\Users\\hp\\IdeaProjects\\airHockey-game\\Assets\\sound\\background2.wav");
+        playSound("C:\\Users\\hp\\IdeaProjects\\airHockey-game\\Assets\\sound\\background.wav");
     }
     public  void playSound(String filePath) {
         try {
@@ -113,7 +113,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     }
 
     public void drawBackGround(){
-        draw(37, 0,0,1200,700);
+        draw(40, 0,0,1200,700);
     }
 
     private void draw(int index, double x, double y, double width, double height) {
@@ -230,9 +230,9 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     }
     private void transefer() {
     if (flag == 1) {
-        new OnePlayer();
+        //single player
     } else if (flag==2) {
-        //two player
+        new Game();
     } else if (flag==3) {
         new HowToPlay();
     } else if (flag==4) {
@@ -241,28 +241,28 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
   private void drawHome() {
       button(0, 250);
-      draw(39, 0, 250);
+      draw(46, 0, 250);
 
       button(0, 100);
-      draw(39, 0, 100);
+      draw(46, 0, 100);
 
       button(0, -50);
-      draw(39, 0, -50);
+      draw(46, 0, -50);
 
       button(0, -200);
-      draw(39, 0, -200);
+      draw(46, 0, -200);
       if (mouseX >-130 && mouseX < 130) {
           if (mouseY > 200 && mouseY < 300) {
-              draw(40, 0, 250);
+              draw(41, 0, 250);
           }
           if (mouseY > 50 && mouseY < 150) {
-              draw(41, 0, 100);
+              draw(42, 0, 100);
           }
           if (mouseY > -100 && mouseY < 0) {
-              draw(42, 0, -50);
+              draw(43, 0, -50);
           }
           if (mouseY > -250 && mouseY < -150) {
-              draw(43, 0, -200);
+              draw(44, 0, -200);
           }
 
       }
