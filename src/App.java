@@ -4,7 +4,7 @@ public class App {
 
     // new HighScores();
     // new HowToPlay();
-    // new Game();
-    new Timer();
+     new Game();
+//    new Timer();
   }
 }

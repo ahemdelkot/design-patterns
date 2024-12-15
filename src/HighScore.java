@@ -73,12 +73,12 @@ class HighScore {
   }
 }
 
-class Score {
-    String name;
-    String score;
-
-    public Score(String name, String score) {
-        this.name = name;
-        this.score = score;
-    }
-}
+//class Score {
+//    String name;
+//    String score;
+//
+//    public Score(String name, String score) {
+//        this.name = name;
+//        this.score = score;
+//    }
+//}

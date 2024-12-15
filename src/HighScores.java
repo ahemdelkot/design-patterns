@@ -177,7 +177,7 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
       scores.add(new Score(in.next(), in.next()));
     }in.close();
   }
-  
+
   private void printScores(){
     String heading = "high scores";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
@@ -185,7 +185,7 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
       if(ch != ' '){
         draw(ch - 'a' + 10, x, y);
       }
-      
+
       x += 40;
     }
 
@@ -197,7 +197,7 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
         draw(ch - 'a' + 10, x, y);
         x += 40;
       }
-      
+
       // for score printing score
       String score = scores.get(i).score;
       for (int j = score.length() - 1, x = 240; j >= 0; j--){
