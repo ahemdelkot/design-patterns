@@ -37,7 +37,7 @@ public abstract class GameObjects {
   }
 
   public static double distance(GameObjects ball1, GameObjects ball2) {
-    double d = Math.sqrt(Math.pow(ball1.x - ball2.x, 2) + Math.pow(ball1.y - ball2.y, 2));
+    double d = Math.pow(ball1.x - ball2.x, 2) + Math.pow(ball1.y - ball2.y, 2);
     return d;
   }
 }
