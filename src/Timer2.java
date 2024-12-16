@@ -3,8 +3,8 @@ import javax.media.opengl.GL;
 public class Timer2 {
   GL gl;
   int[] textures;
-  int timer; int fps;
-  int idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
+  private int timer, fps;
+  private int idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
 
   public Timer2(int fps, int[] textures, GL gl) {
     this.gl = gl;
@@ -18,7 +18,7 @@ public class Timer2 {
   }
 
   private void setTime(){
-    if (timer >= 60) {
+    if (timer >= fps) {
       idx1++;
       timer = 0;
     }
@@ -33,31 +33,32 @@ public class Timer2 {
     if (idx3 > 9) {
       idx4++;
     }
-
-    draw(gl, 0, 0, 10);
-    draw(gl, 0, 0.2, 10);
-    draw(gl, 0.4, 0.1, idx1);
-    draw(gl, 0.2, 0.1, idx2);
-    draw(gl, -0.2, 0.1, idx3);
-    draw(gl, -0.4, 0.1, idx4);
   }
 
-  public void draw(GL gl, double x, double y, int idx) {
-    gl.glEnable(GL.GL_BLEND);
+  public void draw() {
+    draw(45, 0, 290, 20, 20);
+    draw(45, 0, 265, 20, 20);
+    draw(idx4, -80, 280, 20, 20);
+    draw(idx3, -40, 280, 20, 20);
+    draw(idx2, 40, 280, 20, 20);
+    draw(idx1, 80, 280, 20, 20);
+  }
 
-    gl.glBindTexture(GL.GL_TEXTURE_2D, textures[idx]);
-    gl.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  private void draw(int index, double x, double y, double width, double height) {
+    gl.glEnable(GL.GL_BLEND);
+    gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]); // Turn Blending On
 
     gl.glBegin(GL.GL_QUADS);
-    gl.glTexCoord2f(0.0f, 0.0f);
-    gl.glVertex3f(-1.0f, -1.0f, -1.0f);
-    gl.glTexCoord2f(1.0f, 0.0f);
-    gl.glVertex3f(1.0f, -1.0f, -1.0f);
-    gl.glTexCoord2f(1.0f, 1.0f);
-    gl.glVertex3f(1.0f, 1.0f, -1.0f);
-    gl.glTexCoord2f(0.0f, 1.0f);
-    gl.glVertex3f(-1.0f, 1.0f, -1.0f);
+    gl.glTexCoord2f(0.0f, 0.0f); // bottom left point
+    gl.glVertex3f((float) (x - width), (float) (y - height), -1.0f);
+    gl.glTexCoord2f(1.0f, 0.0f); // top left point
+    gl.glVertex3f((float) (x + width), (float) (y - height), -1.0f);
+    gl.glTexCoord2f(1.0f, 1.0f); // top right point
+    gl.glVertex3f((float) (x + width), (float) (y + height), -1.0f);
+    gl.glTexCoord2f(0.0f, 1.0f); // bottom right point
+    gl.glVertex3f((float) (x - width), (float) (y + height), -1.0f);
     gl.glEnd();
 
+    gl.glDisable(GL.GL_BLEND);
   }
 }

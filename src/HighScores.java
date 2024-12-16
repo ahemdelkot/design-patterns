@@ -20,7 +20,7 @@ public class HighScores extends JFrame {
     // ! animator.start();
 
     setTitle("High Scores");
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(1200, 700); // ! set size of the window
     setLocationRelativeTo(null);
     setVisible(true);

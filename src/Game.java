@@ -57,6 +57,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   Ball ball;
   Hand handRight, handLeft;
   boolean pressed;
+  Timer2 timer;
 
   @Override
   public void init(GLAutoDrawable arg0) {
@@ -88,19 +89,22 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     
-    handRight = new Hand(textures[39], 440, 0, true, gl);
-    handLeft = new Hand(textures[39], -440, 0, false, gl);
-    ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
+    handRight = new Hand(textures[39], 440, 0, true, textures, gl);
+    handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
+    ball  = new Ball(textures, 0, 0, handRight, handLeft, gl);
+    timer = new Timer2(30, textures, gl);
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+    timer.addSecond();
     drawBackground();
     handleKeyPress();
     handRight.draw();
     handLeft.draw();
     ball.draw();
+    timer.draw();
   }
 
   public void drawBackground() {
@@ -108,9 +112,9 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   // ? this method to draw the character
-  // private void draw(int index, double x, double y) {
-  //   draw(index, x, y, 40, 40);
-  // }
+  private void draw(int index, double x, double y) {
+    draw(index, x, y, 40, 40);
+  }
 
   public void draw(int index, double x, double y, double width, double height) {
     gl.glEnable(GL.GL_BLEND);
@@ -128,6 +132,46 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
+  }
+
+  private double convertX(double x) {
+    return x * (2 * orthoX) / windowWidth - orthoX;
+  }
+
+  private double convertY(double y) {
+    return orthoY - (2 * orthoY) / windowHight * y;
+  }public boolean isKeyPressed(final int keyCode) {
+    return keyBits.get(keyCode);
+  }
+
+  public void handleKeyPress() {
+
+    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+      handRight.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+      handRight.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_UP)) {
+      handRight.move(0, 10); 
+    }
+    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+      handRight.move(0, -10);
+    }
+
+
+    if (isKeyPressed(KeyEvent.VK_A)) {
+      handLeft.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_D)) {
+      handLeft.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_W)) {
+      handLeft.move(0, 10);
+    }
+    if (isKeyPressed(KeyEvent.VK_S)) {
+      handLeft.move(0, -10);
+    }
   }
 
   @Override
@@ -192,14 +236,6 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
-  private double convertX(double x) {
-    return x * (2 * orthoX) / windowWidth - orthoX;
-  }
-
-  private double convertY(double y) {
-    return orthoY - (2 * orthoY) / windowHight * y;
-  }
-
   BitSet keyBits = new BitSet(256);
 
   @Override
@@ -217,38 +253,5 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   @Override
   public void keyTyped(final KeyEvent event) {}
 
-  public boolean isKeyPressed(final int keyCode) {
-    return keyBits.get(keyCode);
-  }
-
-  public void handleKeyPress() {
-
-    if (isKeyPressed(KeyEvent.VK_LEFT)) {
-      handRight.move(-10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-      handRight.move(10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_UP)) {
-      handRight.move(0, 10); 
-    }
-    if (isKeyPressed(KeyEvent.VK_DOWN)) {
-      handRight.move(0, -10);
-    }
-
-
-    if (isKeyPressed(KeyEvent.VK_A)) {
-      handLeft.move(-10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_D)) {
-      handLeft.move(10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_W)) {
-      handLeft.move(0, 10);
-    }
-    if (isKeyPressed(KeyEvent.VK_S)) {
-      handLeft.move(0, -10);
-    }
-    
-  }
+  
 }

@@ -40,6 +40,7 @@ class HighScores2 {
   }
 
   public void printScores() {
+    gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     String heading = "high scores";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
       char ch = heading.charAt(i);
@@ -68,15 +69,7 @@ class HighScores2 {
       }
       y -= 60;
     }
+    draw(37, -575, 325);
   }
 }
 
-class Score {
-  String name;
-  String score;
-
-  public Score(String name, String score) {
-    this.name = name;
-    this.score = score;
-  }
-}
