@@ -3,7 +3,7 @@ package GameObjects;
 import javax.media.opengl.*;
 
 public class Ball extends GameObjects {
-  public double m = 1, dx = 2 * 0, dy = m * dx;
+  public double m = 1, dx = 2 , dy = m * dx;
   private boolean move = true;
   private Hand hand1;
   private Hand hand2;
