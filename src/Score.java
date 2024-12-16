@@ -1,7 +1,8 @@
+// في ملف HighScore.java
+class Score {
+  String name;
+  String score;
 
-public class Score {
-  String name, score;
-  
   public Score(String name, String score) {
     this.name = name;
     this.score = score;

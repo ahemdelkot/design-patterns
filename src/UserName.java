@@ -1,24 +1,26 @@
 import javax.media.opengl.*;
 import javax.swing.*;
-// import com.sun.opengl.util.*;
+import com.sun.opengl.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import java.util.*;
 
-public class HowToPlay extends JFrame {
-  public HowToPlay() {
-    HowToPlayEventListener listener = new HowToPlayEventListener();
+public class UserName extends JFrame {
+  public UserName() {
+    UserNameEventListener listener = new UserNameEventListener();
     GLCanvas glcanvas = new GLCanvas();
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
+    glcanvas.addKeyListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
-    // ! Animator animator = new FPSAnimator(15);
-    // ! animator.add(glcanvas);
-    // ! animator.start();
+    Animator animator = new FPSAnimator(60);
+    animator.add(glcanvas);
+    animator.start();
 
-    setTitle("How to Play");
+    setTitle("User Name");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(1200, 700); // ! set size of the window
     setLocationRelativeTo(null);
@@ -28,24 +30,23 @@ public class HowToPlay extends JFrame {
   }
 }
 
-class HowToPlayEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class UserNameEventListener implements GLEventListener, MouseMotionListener, MouseListener, KeyListener {
+
   /*
    * // ? number from 0 to 9
    * // ? letter from 10 to 35
-   * // ? how to play in 36
-  */
+   */
+
   final static String ASSETS_PATH = "Assets\\Letters";
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
-   int textures[] = new int[textureNames.length];
-  ///////////////////////////
-  HighScores2 sc;
-  ///////////////////////////
-
+  final int textures[] = new int[textureNames.length];
 
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
+  ArrayList<Integer> input = new ArrayList<>(7);
+
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -76,68 +77,41 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
       }
     }
 
-    try {
-      sc = new HighScores2(gl, textures);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
-    // color(255, 250, 255);
-    // gl.glLineWidth(5);
-    // gl.glBegin(GL.GL_LINES);
-    // gl.glVertex2d(0, 350);
-    // gl.glVertex2d(0, -350);
-    // gl.glEnd();
-
-    String heading = "how to play";
-    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
-      char ch = heading.charAt(i);
-      if(ch != ' '){
-        draw(ch - 'a' + 10, x, y);
-      }
-      
-      x += 40;
-    }
-
-    sc.printScores();
-
+    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+    printInput();
+    // System.out.print("\r" + input);
   }
 
-  private void draw(int index, double x, double y){
-    draw(index, x, y, 40, 40);
-  }
-
-  public void draw(int index, double x, double y, double width, double height) {
-    // draw the character 
+  public void draw(int index, double x, double y) {
+    // draw the character
     gl.glEnable(GL.GL_BLEND);
     gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]); // Turn Blending On
 
     gl.glBegin(GL.GL_QUADS);
     gl.glTexCoord2f(0.0f, 0.0f); // bottom left point
-    gl.glVertex3f((float) (x - 0.5 * width), (float) (y - 0.5 * height), -1.0f);
+    gl.glVertex3f((float) (x - 20), (float) (y - 20), -1.0f);
     gl.glTexCoord2f(1.0f, 0.0f); // top left point
-    gl.glVertex3f((float) (x + 0.5 * width), (float) (y - 0.5 * height), -1.0f);
+    gl.glVertex3f((float) (x + 20), (float) (y - 20), -1.0f);
     gl.glTexCoord2f(1.0f, 1.0f); // top right point
-    gl.glVertex3f((float) (x + 0.5 * width), (float) (y + 0.5 * height), -1.0f);
+    gl.glVertex3f((float) (x + 20), (float) (y + 20), -1.0f);
     gl.glTexCoord2f(0.0f, 1.0f); // bottom right point
-    gl.glVertex3f((float) (x - 0.5 * width), (float) (y + 0.5 * height), -1.0f);
+    gl.glVertex3f((float) (x - 20), (float) (y + 20), -1.0f);
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
   }
 
-  // private void color(float r, float g, float b) {
-  //   gl.glColor3f(r / 255, g / 255, b / 255);
-  // }
+  @Override
+  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
+  }
 
   @Override
-  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
-
-  @Override
-  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
+  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+  }
 
   @Override
   public void mouseClicked(MouseEvent e) {
@@ -181,11 +155,42 @@ class HowToPlayEventListener implements GLEventListener, MouseMotionListener, Mo
     windowWidth = e.getComponent().getWidth();
   }
 
-  // private double convertX(double x) {
-  //   return x * (2 * orthoX) / windowWidth - orthoX;
-  // }
+  private double convertX(double x) {
+    return x * (2 * orthoX) / windowWidth - orthoX;
+  }
 
-  // private double convertY(double y) {
-  //   return orthoY - 2 * orthoY / windowHight * y;
-  // }
+  private double convertY(double y) {
+    return orthoY - 2 * orthoY / windowHight * y;
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyTyped(KeyEvent e) {
+    char ch = e.getKeyChar();
+    int backSpaceCode = 8;
+
+    // System.out.println(ch + " " + (ch == backSpaceCode));
+    if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
+      input.add(ch - 'a' + 10);
+    }
+    else if(ch == backSpaceCode && input.size() > 0)
+      input.remove(input.size() - 1);
+  }
+
+  public void printInput() {
+    for (int i = 0, y = 280, x = -200; i < input.size(); i++) {
+      draw(input.get(i), x, 0);
+
+      x += 45;
+    }
+  }
 }
