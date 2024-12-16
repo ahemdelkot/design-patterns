@@ -91,7 +91,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     
     handRight = new Hand(textures[39], 440, 0, true, textures, gl);
     handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
-    ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
+    ball  = new Ball(textures, 0, 0, handRight, handLeft, gl);
     timer = new Timer2(30, textures, gl);
   }
 
@@ -132,6 +132,46 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
+  }
+
+  private double convertX(double x) {
+    return x * (2 * orthoX) / windowWidth - orthoX;
+  }
+
+  private double convertY(double y) {
+    return orthoY - (2 * orthoY) / windowHight * y;
+  }public boolean isKeyPressed(final int keyCode) {
+    return keyBits.get(keyCode);
+  }
+
+  public void handleKeyPress() {
+
+    if (isKeyPressed(KeyEvent.VK_LEFT)) {
+      handRight.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
+      handRight.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_UP)) {
+      handRight.move(0, 10); 
+    }
+    if (isKeyPressed(KeyEvent.VK_DOWN)) {
+      handRight.move(0, -10);
+    }
+
+
+    if (isKeyPressed(KeyEvent.VK_A)) {
+      handLeft.move(-10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_D)) {
+      handLeft.move(10, 0);
+    }
+    if (isKeyPressed(KeyEvent.VK_W)) {
+      handLeft.move(0, 10);
+    }
+    if (isKeyPressed(KeyEvent.VK_S)) {
+      handLeft.move(0, -10);
+    }
   }
 
   @Override
@@ -196,14 +236,6 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     handRight.moveTo(convertX(e.getX()), convertY(e.getY()));
   }
 
-  private double convertX(double x) {
-    return x * (2 * orthoX) / windowWidth - orthoX;
-  }
-
-  private double convertY(double y) {
-    return orthoY - (2 * orthoY) / windowHight * y;
-  }
-
   BitSet keyBits = new BitSet(256);
 
   @Override
@@ -221,38 +253,5 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
   @Override
   public void keyTyped(final KeyEvent event) {}
 
-  public boolean isKeyPressed(final int keyCode) {
-    return keyBits.get(keyCode);
-  }
-
-  public void handleKeyPress() {
-
-    if (isKeyPressed(KeyEvent.VK_LEFT)) {
-      handRight.move(-10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_RIGHT)) {
-      handRight.move(10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_UP)) {
-      handRight.move(0, 10); 
-    }
-    if (isKeyPressed(KeyEvent.VK_DOWN)) {
-      handRight.move(0, -10);
-    }
-
-
-    if (isKeyPressed(KeyEvent.VK_A)) {
-      handLeft.move(-10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_D)) {
-      handLeft.move(10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_W)) {
-      handLeft.move(0, 10);
-    }
-    if (isKeyPressed(KeyEvent.VK_S)) {
-      handLeft.move(0, -10);
-    }
-    
-  }
+  
 }

@@ -13,10 +13,14 @@ public abstract class GameObjects {
     this.y = y;
     this.gl = gl;
   }
+
+  public void draw(){
+    draw(this.textureIndex, this.x, this.y, this.width, this.height);
+  }
   
-  public void draw() {
+  public void draw(int index, double x, double y, double width, double height) {
     gl.glEnable(GL.GL_BLEND);
-    gl.glBindTexture(GL.GL_TEXTURE_2D, textureIndex); // Turn Blending On
+    gl.glBindTexture(GL.GL_TEXTURE_2D, index); // Turn Blending On
 
     gl.glBegin(GL.GL_QUADS);
     gl.glTexCoord2f(0.0f, 0.0f); // bottom left point
