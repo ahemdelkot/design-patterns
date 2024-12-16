@@ -45,7 +45,6 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
   ArrayList<Score> scores = new ArrayList<>();
 
-
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -177,7 +176,7 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
       scores.add(new Score(in.next(), in.next()));
     }in.close();
   }
-  
+
   private void printScores(){
     String heading = "high scores";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
@@ -189,18 +188,19 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
       x += 45;
     }
 
+
     for (int i = 0, y = 150; i < scores.size(); i++) {
-      // for name printing names
+      // for printing names
       String name = scores.get(i).name;
-      for (int j = 0, x = -240; j < name.length(); j++){
+      for (int j = 0, x = -240; j < name.length(); j++) {
         char ch = name.charAt(j);
         draw(ch - 'a' + 10, x, y);
         x += 45;
       }
-      
-      // for score printing score
+
+      // for printing score
       String score = scores.get(i).score;
-      for (int j = score.length() - 1, x = 240; j >= 0; j--){
+      for (int j = score.length() - 1, x = 240; j >= 0; j--) {
         char ch = score.charAt(j);
         draw(ch - '0', x, y);
         x -= 45;
