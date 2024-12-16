@@ -67,7 +67,8 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   int mouseX = 0, mouseY = 0;
   HowtoPlay2 howToPlay2;
   HighScores2 highScores2;
-
+  Levels levels;
+  Game game;
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -107,6 +108,11 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+      try {
+          levels = new Levels(textures, gl);
+      } catch (FileNotFoundException e) {
+          throw new RuntimeException(e);
+      }
   }
 
   @Override
@@ -119,8 +125,12 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     if (flag == 0) {
       drawBackGround();
       drawHome();
-    } else
+    }  else {
       transefer();
+          if (flag == 1) {
+//            drawBackGround();
+            drawLevels();}
+    }
   }
 
   private void draw(int index, double x, double y) {
@@ -184,7 +194,6 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     mouseX = (int) convertX(e.getX());
     mouseY = (int) convertY(e.getY());
     if (flag == 0) {
-      playSound("Assets\\sound\\background.wav");
       if (mouseX > -130 && mouseX < 130) {
         if (mouseY > 200 && mouseY < 300) {
           flag = 1;
@@ -206,26 +215,30 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
       if (mouseY < -250 && mouseY > -350) {
         if (mouseX > -600 && mouseX < -550) {
-          System.out.println("x: " + mouseX + " y: " + mouseY);
           System.exit(0);
         } else if (mouseX > 550 && mouseX < 600) {
-          System.out.println("x: " + mouseX + " y: " + mouseY);
-
+          //music on/off
         }
       }
-    } else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
-      {
-        if (mouseX > -600 && mouseX < -550) {
-          if (mouseY > 250 && mouseY < 350) {
-            System.out.println("x: " + mouseX + " y: " + mouseY);
-            // gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-            flag = 0;
+    }  else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
+      if (flag == 1) {
+        if (mouseX > -130 && mouseX < 130) {
+          if (mouseY > 50 && mouseY < 150) {
+            System.out.println("level 1");
+          }
+          if (mouseY > -100 && mouseY < 0) {
+            System.out.println("level 2");
+          }
+          if (mouseY > -250 && mouseY < -150) {
+            System.out.println("level 3");
           }
         }
       }
-    }
+        if (mouseX > -600 && mouseX < -550&&mouseY > 250 && mouseY < 350) {
+            flag = 0;
+        }
+      }
   }
-
   @Override
   public void mouseReleased(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
@@ -261,6 +274,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   private void transefer() {
     if (flag == 1) {
       // single player-not implemented
+      levels.draw();
     } else if (flag == 2) {
       // new Game();
     } else if (flag == 3) {
@@ -268,6 +282,8 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     } else if (flag == 4) {
       // new HighScores();
       highScores2.printScores();
+    } else if (flag==5) {
+      System.out.println("level one");
     }
   }
 
@@ -311,6 +327,22 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       clip.start();
     } catch (Exception e) {
       System.err.println("Error playing sound: " + e.getMessage());
+    }
+  }
+  public void drawLevels() {
+    draw(46, 0, 100);
+    draw(46, 0, -50);
+    draw(46, 0, -200);
+      if (mouseX > -130 && mouseX < 130) {
+        if (mouseY > 50 && mouseY < 150) {
+          draw(42, 0, 100);
+        }
+        if (mouseY > -100 && mouseY < 0) {
+          draw(43, 0, -50);
+        }
+        if (mouseY > -250 && mouseY < -150) {
+          draw(44, 0, -200);
+      }
     }
   }
 }
