@@ -31,7 +31,7 @@ public class Home extends JFrame {
     glcanvas.requestFocus();
     // Play background music or sound effect
     // if (flag == 0){
-    playSound("Assets\\sound\\game.wav");
+    // playSound("Assets\\sound\\game.wav");
     // }
   }
 
@@ -65,7 +65,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag = 0;
   int mouseX = 0, mouseY = 0;
-  HowtoPlay2 howToPlay2;
+  HowToPlay2 howToPlay2;
   HighScores2 highScores2;
 
   @Override
@@ -98,10 +98,11 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     try {
-      howToPlay2 = new HowtoPlay2(textures, 36, gl);
+      howToPlay2 = new HowToPlay2(textures, 36, gl);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
+    
     try {
       highScores2 = new HighScores2(gl, textures);
     } catch (FileNotFoundException e) {
@@ -151,31 +152,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glDisable(GL.GL_BLEND);
   }
 
-  @Override
-  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-  }
-
-  @Override
-  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-  }
-
-  @Override
-  public void mouseClicked(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
-
-  @Override
-  public void mouseEntered(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
-
-  @Override
-  public void mouseExited(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
+  
 
   @Override
   public void mousePressed(MouseEvent e) {
@@ -205,14 +182,12 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         }
       }
       if (mouseY < -250 && mouseY > -350) {
+        System.out.println("x: " + mouseX + " y: " + mouseY);
         if (mouseX > -600 && mouseX < -550) {
-          System.out.println("x: " + mouseX + " y: " + mouseY);
           System.exit(0);
-        } else if (mouseX > 550 && mouseX < 600) {
-          System.out.println("x: " + mouseX + " y: " + mouseY);
-
         }
       }
+      
     } else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
       {
         if (mouseX > -600 && mouseX < -550) {
@@ -226,17 +201,6 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     }
   }
 
-  @Override
-  public void mouseReleased(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
-
-  @Override
-  public void mouseDragged(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
 
   @Override
   public void mouseMoved(MouseEvent e) {
@@ -261,12 +225,14 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   private void transefer() {
     if (flag == 1) {
       // single player-not implemented
-    } else if (flag == 2) {
-      // new Game();
-    } else if (flag == 3) {
+    } 
+    else if (flag == 2) {
+     
+    } 
+    else if (flag == 3) {
       howToPlay2.draw();
-    } else if (flag == 4) {
-      // new HighScores();
+    } 
+    else if (flag == 4) {
       highScores2.printScores();
     }
   }
@@ -312,5 +278,43 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     } catch (Exception e) {
       System.err.println("Error playing sound: " + e.getMessage());
     }
+  }
+
+  @Override
+  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
+  }
+
+  @Override
+  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+  }
+
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseReleased(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseDragged(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
   }
 }

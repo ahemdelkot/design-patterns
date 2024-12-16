@@ -5,12 +5,12 @@ import java.io.*;
 // import java.awt.*;
 // import java.awt.event.*;
 
-public class HowtoPlay2{
+public class HowToPlay2{
   int index;
   int textures[];
   GL gl;
 
-  public HowtoPlay2(int[] textures, int index,GL gl) throws FileNotFoundException {
+  public HowToPlay2(int[] textures, int index,GL gl) throws FileNotFoundException {
     this.textures = textures;
     this.index = index;
     this.gl=gl;

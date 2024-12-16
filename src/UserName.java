@@ -1,6 +1,6 @@
 import javax.media.opengl.*;
 import javax.swing.*;
-// import com.sun.opengl.util.*;
+import com.sun.opengl.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import Texture.TextureReader;
@@ -8,19 +8,20 @@ import javax.media.opengl.glu.GLU;
 import java.io.*;
 import java.util.*;
 
-public class HighScores extends JFrame {
-  public HighScores() {
-    HighScoresEventListener listener = new HighScoresEventListener();
+public class UserName extends JFrame {
+  public UserName() {
+    UserNameEventListener listener = new UserNameEventListener();
     GLCanvas glcanvas = new GLCanvas();
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
+    glcanvas.addKeyListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
-    // ! Animator animator = new FPSAnimator(15);
-    // ! animator.add(glcanvas);
-    // ! animator.start();
+    Animator animator = new FPSAnimator(60);
+    animator.add(glcanvas);
+    animator.start();
 
-    setTitle("High Scores");
-//    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setTitle("User Name");
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     setSize(1200, 700); // ! set size of the window
     setLocationRelativeTo(null);
     setVisible(true);
@@ -29,12 +30,13 @@ public class HighScores extends JFrame {
   }
 }
 
-class HighScoresEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class UserNameEventListener implements GLEventListener, MouseMotionListener, MouseListener, KeyListener {
 
   /*
    * // ? number from 0 to 9
    * // ? letter from 10 to 35
-  */
+   */
+
   final static String ASSETS_PATH = "Assets\\Letters";
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
@@ -43,8 +45,7 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, fliped;
-  ArrayList<Score> scores = new ArrayList<>();
-
+  ArrayList<Integer> input = new ArrayList<>(7);
 
   @Override
   public void init(GLAutoDrawable arg0) {
@@ -76,24 +77,13 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
       }
     }
 
-    try {
-      getScores();
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
   }
 
   @Override
   public void display(GLAutoDrawable arg0) {
-    // ! the y-axis
-    // color(255, 250, 255);
-    // gl.glLineWidth(5);
-    // gl.glBegin(GL.GL_LINES);
-    // gl.glVertex2d(0, 350);
-    // gl.glVertex2d(0, -350);
-    // gl.glEnd();
-
-    printScores();
+    gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+    printInput();
+    // System.out.print("\r" + input);
   }
 
   public void draw(int index, double x, double y) {
@@ -116,10 +106,12 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
   }
 
   @Override
-  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {}
+  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
+  }
 
   @Override
-  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {}
+  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+  }
 
   @Override
   public void mouseClicked(MouseEvent e) {
@@ -163,49 +155,42 @@ class HighScoresEventListener implements GLEventListener, MouseMotionListener, M
     windowWidth = e.getComponent().getWidth();
   }
 
-  // private double convertX(double x) {
-  //   return x * (2 * orthoX) / windowWidth - orthoX;
-  // }
-
-  // private double convertY(double y) {
-  //   return orthoY - 2 * orthoY / windowHight * y;
-  // }
-
-  private void getScores() throws FileNotFoundException {
-    Scanner in = new Scanner(new File("data\\score.txt"));
-    while (in.hasNext()) {
-      scores.add(new Score(in.next(), in.next()));
-    }in.close();
+  private double convertX(double x) {
+    return x * (2 * orthoX) / windowWidth - orthoX;
   }
-  
-  private void printScores(){
-    String heading = "high scores";
-    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
-      char ch = heading.charAt(i);
-      if(ch != ' '){
-        draw(ch - 'a' + 10, x, y);
-      }
-      
-      x += 45;
-    }
 
-    for (int i = 0, y = 150; i < scores.size(); i++) {
-      // for name printing names
-      String name = scores.get(i).name;
-      for (int j = 0, x = -240; j < name.length(); j++){
-        char ch = name.charAt(j);
-        draw(ch - 'a' + 10, x, y);
-        x += 45;
-      }
-      
-      // for score printing score
-      String score = scores.get(i).score;
-      for (int j = score.length() - 1, x = 240; j >= 0; j--){
-        char ch = score.charAt(j);
-        draw(ch - '0', x, y);
-        x -= 45;
-      }
-      y -= 60;
+  private double convertY(double y) {
+    return orthoY - 2 * orthoY / windowHight * y;
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyTyped(KeyEvent e) {
+    char ch = e.getKeyChar();
+    int backSpaceCode = 8;
+
+    // System.out.println(ch + " " + (ch == backSpaceCode));
+    if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
+      input.add(ch - 'a' + 10);
+    }
+    else if(ch == backSpaceCode && input.size() > 0)
+      input.remove(input.size() - 1);
+  }
+
+  public void printInput() {
+    for (int i = 0, y = 280, x = -200; i < input.size(); i++) {
+      draw(input.get(i), x, 0);
+
+      x += 45;
     }
   }
 }
