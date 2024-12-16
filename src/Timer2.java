@@ -12,7 +12,7 @@ public class Timer2 {
     this.fps = fps;
   }
 
-  public void addSecond() {
+  public void add() {
     timer++;
     setTime();
   }
