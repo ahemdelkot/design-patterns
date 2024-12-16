@@ -92,7 +92,7 @@ class GameEventListener implements GLEventListener, MouseMotionListener, MouseLi
     handRight = new Hand(textures[39], 440, 0, true, textures, gl);
     handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
     ball  = new Ball(textures[38], 0, 0, handRight, handLeft, gl);
-    timer = new Timer2(60, textures, gl);
+    timer = new Timer2(30, textures, gl);
   }
 
   @Override
