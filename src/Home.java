@@ -6,19 +6,21 @@ import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import java.util.BitSet;
 import javax.sound.sampled.*;
 
 public class Home extends JFrame {
   public Home() {
     HomeEventListener listener = new HomeEventListener();
     GLCanvas glcanvas = new GLCanvas();
+    glcanvas.addKeyListener(listener);
     glcanvas.addGLEventListener(listener);
     glcanvas.addMouseListener(listener);
     glcanvas.addMouseMotionListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
 
     // glcanvas.addKeyListener((KeyListener) listener);
-    Animator animator = new FPSAnimator(15);
+    Animator animator = new FPSAnimator(60);
     animator.add(glcanvas);
     animator.start();
 
@@ -49,7 +51,7 @@ public class Home extends JFrame {
   }
 }
 
-class HomeEventListener implements GLEventListener, MouseMotionListener, MouseListener {
+class HomeEventListener implements GLEventListener, MouseMotionListener, MouseListener, KeyListener {
   /*
    * // ? number from 0 to 9
    * // ? letter from 10 to 35
@@ -61,13 +63,14 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final int textures[] = new int[textureNames.length];
 
   GL gl; // global gl drawable to use in the class
-  GLCanvas glcanvas;
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag = 0;
   int mouseX = 0, mouseY = 0;
   HowtoPlay2 howToPlay2;
   HighScores2 highScores2;
   Levels levels;
+  Game2 game2;
+  BitSet keyBits=new BitSet(256);
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -112,6 +115,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       } catch (FileNotFoundException e) {
           throw new RuntimeException(e);
       }
+      game2= new Game2(gl, textures, keyBits);
   }
 
   @Override
@@ -258,6 +262,23 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     mouseY = (int) convertY(e.getY());
   }
 
+  @Override
+  public void keyTyped(KeyEvent e) {
+
+  }
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    int key = e.getKeyCode();
+    keyBits.set(key);
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    int key = e.getKeyCode();
+    keyBits.clear(key);
+  }
+
   private void color(float r, float g, float b) {
     gl.glColor3f(r / 255, g / 255, b / 255);
   }
@@ -276,6 +297,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       levels.drawLevels();
     } else if (flag == 2) {
       // new Game();
+      game2.draw();
     } else if (flag == 3) {
       howToPlay2.drawH();
     } else if (flag == 4) {
