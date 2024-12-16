@@ -68,7 +68,6 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   HowtoPlay2 howToPlay2;
   HighScores2 highScores2;
   Levels levels;
-  Game game;
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -274,11 +273,11 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   private void transefer() {
     if (flag == 1) {
       // single player-not implemented
-      levels.draw();
+      levels.drawLevels();
     } else if (flag == 2) {
       // new Game();
     } else if (flag == 3) {
-      howToPlay2.draw();
+      howToPlay2.drawH();
     } else if (flag == 4) {
       // new HighScores();
       highScores2.printScores();

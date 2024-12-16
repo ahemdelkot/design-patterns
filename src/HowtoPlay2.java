@@ -5,18 +5,18 @@ import java.io.*;
 // import java.awt.*;
 // import java.awt.event.*;
 
-public class HowToPlay2{
+public class HowtoPlay2 {
   int index;
   int textures[];
   GL gl;
 
-  public HowToPlay2(int[] textures, int index,GL gl) throws FileNotFoundException {
+  public HowtoPlay2(int[] textures, int index, GL gl) throws FileNotFoundException {
     this.textures = textures;
     this.index = index;
     this.gl=gl;
   }
 
-  public void draw() {
+  public void drawH() {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     String heading = "how to play";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {

@@ -16,7 +16,7 @@ public class Levels  {
         this.gl=gl;
     }
 
-    public void draw() {
+    public void drawLevels() {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         drawBackGround();
         String heading = "levels";
