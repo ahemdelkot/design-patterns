@@ -1,37 +1,45 @@
+package Pages;
 import java.awt.event.*;
 import javax.media.opengl.*;
+
 import GameObjects.Ball;
 import GameObjects.Hand;
 import java.util.BitSet;
 
-public class Game2 {
+public class Game {
   GL gl;
   int[] textures;
   BitSet keyBits;
+  int[] mouse;
+  boolean[] mouseClicked;
 
   Hand handRight, handLeft;
   Ball ball;
-  Timer2 timer;
+  Timer timer;
 
-  public Game2(GL gl, int[] textures, BitSet keyBits) {
+  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked,BitSet keyBits) {
     this.gl = gl;
     this.textures = textures;
     this.keyBits = keyBits;
+    this.mouse = mouse;
+    this.mouseClicked = mouseClicked;
     handRight = new Hand(textures[39], 440, 0, true, textures, gl);
     handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
     ball = new Ball(textures, 0, 0, handRight, handLeft, gl);
-    timer = new Timer2(60, textures, gl);
+    timer = new Timer(60, textures, gl);
   }
 
   public void draw() {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-    timer.add();
     drawBackground();
     handleKeyPress();
-    handRight.draw();
-    handLeft.draw();
-    ball.draw();
+    timer.add();
     timer.draw();
+    ball.draw();
+
+    handLeft.draw();
+    handRight.draw();
+    if (mouseClicked[0]) handRight.moveTo(mouse[0], mouse[1]);
   }
 
   public void drawBackground() {
@@ -87,5 +95,12 @@ public class Game2 {
     if (isKeyPressed(KeyEvent.VK_S)) {
       handLeft.move(0, -10);
     }
+  }
+
+  public void reset() {
+    timer.reset();
+    handLeft.reset();
+    handRight.reset();
+    ball.reset();
   }
 }

@@ -72,4 +72,9 @@ public class Hand extends GameObjects{
 
     gl.glDisable(GL.GL_BLEND);
   }
+
+  public void reset() {
+    this.x = right ? 440 : -440;
+    this.y = 0;
+  }
 }

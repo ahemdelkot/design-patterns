@@ -179,10 +179,9 @@ class UserNameEventListener implements GLEventListener, MouseMotionListener, Mou
     int backSpaceCode = 8;
 
     // System.out.println(ch + " " + (ch == backSpaceCode));
-    if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
+    if (ch >= 'a' && ch <= 'z' && input.size() <= 6) {
       input.add(ch - 'a' + 10);
-    }
-    else if(ch == backSpaceCode && input.size() > 0)
+    } else if (ch == backSpaceCode && input.size() > 0)
       input.remove(input.size() - 1);
   }
 

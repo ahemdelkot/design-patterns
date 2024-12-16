@@ -1,12 +1,13 @@
+package Pages;
 import javax.media.opengl.GL;
 
-public class Timer2 {
+public class Timer {
   GL gl;
   int[] textures;
   private int timer, fps;
   private int idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
 
-  public Timer2(int fps, int[] textures, GL gl) {
+  public Timer(int fps, int[] textures, GL gl) {
     this.gl = gl;
     this.textures = textures;
     this.fps = fps;
@@ -17,7 +18,7 @@ public class Timer2 {
     setTime();
   }
 
-  private void setTime(){
+  private void setTime() {
     if (timer >= fps) {
       idx1++;
       timer = 0;
@@ -60,5 +61,12 @@ public class Timer2 {
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
+  }
+
+  public void reset() {
+    idx1 = 0;
+    idx2 = 0;
+    idx3 = 0;
+    idx4 = 0;
   }
 }

@@ -1,3 +1,4 @@
+package Pages;
 import javax.media.opengl.*;
 import java.io.*;
 // import javax.swing.*;
@@ -5,21 +6,21 @@ import java.io.*;
 // import java.awt.*;
 // import java.awt.event.*;
 
-public class HowtoPlay2 {
+public class Levels {
   int index;
   int textures[];
   GL gl;
 
-  public HowtoPlay2(int[] textures, int index, GL gl) throws FileNotFoundException {
+  public Levels(int[] textures, GL gl) throws FileNotFoundException {
     this.textures = textures;
-    this.index = index;
-    this.gl=gl;
+    this.gl = gl;
   }
 
-  public void drawH() {
+  public void drawLevels() {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-    String heading = "how to play";
-    for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
+    drawBackGround();
+    String heading = "levels";
+    for (int i = 0, y = 280, x = -100; i < heading.length(); i++) {
       char ch = heading.charAt(i);
       if (ch != ' ') {
         draw(ch - 'a' + 10, x, y);
@@ -28,18 +29,25 @@ public class HowtoPlay2 {
       x += 40;
     }
 
-    draw(36, 0, -50, 1100, 520);
-    //back button
-    draw(37, -575, 325,50 , 50);
+    draw(46, 0, 100, 260, 100);
+
+    draw(46, 0, -50, 260, 100);
+
+    draw(46, 0, -200, 260, 100);
+    // back button
+    draw(37, -575, 325, 50, 50);
   }
 
   private void draw(int index, double x, double y) {
     draw(index, x, y, 40, 40);
   }
 
+  public void drawBackGround() {
+    draw(40, 0, 0, 1200, 700);
+  }
+
   private void draw(int index, double x, double y, double width, double height) {
     // draw the character
-    gl.glColor3f(1,1,1);
     gl.glEnable(GL.GL_BLEND);
     gl.glBindTexture(GL.GL_TEXTURE_2D, textures[index]); // Turn Blending On
 
@@ -56,4 +64,5 @@ public class HowtoPlay2 {
 
     gl.glDisable(GL.GL_BLEND);
   }
+
 }

@@ -8,6 +8,7 @@ import javax.media.opengl.glu.GLU;
 import java.io.*;
 import java.util.BitSet;
 import javax.sound.sampled.*;
+import Pages.*;
 
 public class Home extends JFrame {
   public Home() {
@@ -57,7 +58,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
    * // ? letter from 10 to 35
    * // ? how to play in 36
    */
-  final static String ASSETS_PATH = "Assets\\Letters";
+  final static String ASSETS_PATH = "Assets\\Sprites";
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
@@ -65,12 +66,14 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag = 0;
-  int mouseX = 0, mouseY = 0;
-  HowtoPlay2 howToPlay2;
-  HighScores2 highScores2;
+  int[] mouse = new int[2];
+  boolean[] mouseClicked = {false};
+  HowToPlay howToPlay;
+  HighScores HighScores;
   Levels levels;
-  Game2 game2;
-  BitSet keyBits=new BitSet(256);
+  Game game;
+  BitSet keyBits = new BitSet(256);
+
   @Override
   public void init(GLAutoDrawable arg0) {
     this.gl = arg0.getGL(); // set the gl drawable
@@ -101,21 +104,13 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
     try {
-      howToPlay2 = new HowtoPlay2(textures, 36, gl);
+      howToPlay = new HowToPlay(textures, 36, gl);
+      HighScores = new HighScores(gl, textures);
+      levels = new Levels(textures, gl);
+      game = new Game(gl, textures, mouse, mouseClicked, keyBits);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
-    try {
-      highScores2 = new HighScores2(gl, textures);
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-      try {
-          levels = new Levels(textures, gl);
-      } catch (FileNotFoundException e) {
-          throw new RuntimeException(e);
-      }
-      game2= new Game2(gl, textures, keyBits);
   }
 
   @Override
@@ -128,11 +123,12 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     if (flag == 0) {
       drawBackGround();
       drawHome();
-    }  else {
-      transefer();
-          if (flag == 1) {
-//            drawBackGround();
-            drawLevels();}
+    } else {
+      transfer();
+      if (flag == 1) {
+        // drawBackGround();
+        drawLevels();
+      }
     }
   }
 
@@ -194,72 +190,78 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void mousePressed(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouseX = (int) convertX(e.getX());
-    mouseY = (int) convertY(e.getY());
+    mouse[0] = (int) convertX(e.getX());
+    mouse[1] = (int) convertY(e.getY());
+    mouseClicked[0] = true;
+    
     if (flag == 0) {
-      if (mouseX > -130 && mouseX < 130) {
-        if (mouseY > 200 && mouseY < 300) {
+      if (mouse[0] > -130 && mouse[0] < 130) {
+        if (mouse[1] > 200 && mouse[1] < 300) {
           flag = 1;
           playSound("Assets\\sound\\background.wav");
         }
-        if (mouseY > 50 && mouseY < 150) {
+        if (mouse[1] > 50 && mouse[1] < 150) {
           flag = 2;
           playSound("Assets\\sound\\background.wav");
         }
-        if (mouseY > -100 && mouseY < 0) {
+        if (mouse[1] > -100 && mouse[1] < 0) {
           flag = 3;
           playSound("Assets\\sound\\background.wav");
 
         }
-        if (mouseY > -250 && mouseY < -150) {
+        if (mouse[1] > -250 && mouse[1] < -150) {
           flag = 4;
           playSound("Assets\\sound\\background.wav");
         }
       }
-      if (mouseY < -250 && mouseY > -350) {
-        if (mouseX > -600 && mouseX < -550) {
+      if (mouse[1] < -250 && mouse[1] > -350) {
+        if (mouse[0] > -600 && mouse[0] < -550) {
           System.exit(0);
-        } else if (mouseX > 550 && mouseX < 600) {
-          //music on/off
+        } else if (mouse[0] > 550 && mouse[0] < 600) {
+          // music on/off
         }
       }
-    }  else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
+    } else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
       if (flag == 1) {
-        if (mouseX > -130 && mouseX < 130) {
-          if (mouseY > 50 && mouseY < 150) {
+        if (mouse[0] > -130 && mouse[0] < 130) {
+          if (mouse[1] > 50 && mouse[1] < 150) {
             System.out.println("level 1");
           }
-          if (mouseY > -100 && mouseY < 0) {
+          if (mouse[1] > -100 && mouse[1] < 0) {
             System.out.println("level 2");
           }
-          if (mouseY > -250 && mouseY < -150) {
+          if (mouse[1] > -250 && mouse[1] < -150) {
             System.out.println("level 3");
           }
         }
       }
-        if (mouseX > -600 && mouseX < -550&&mouseY > 250 && mouseY < 350) {
-            flag = 0;
-        }
+      if (mouse[0] > -600 && mouse[0] < -550 && mouse[1] > 250 && mouse[1] < 350) {
+        flag = 0;
       }
+    }
   }
+
   @Override
   public void mouseReleased(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+    mouseClicked[0] = false;
   }
 
   @Override
   public void mouseDragged(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
+    mouse[0] = (int) convertX(e.getX());
+    mouse[1] = (int) convertY(e.getY());
   }
 
   @Override
   public void mouseMoved(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouseX = (int) convertX(e.getX());
-    mouseY = (int) convertY(e.getY());
+    mouse[0] = (int) convertX(e.getX());
+    mouse[1] = (int) convertY(e.getY());
   }
 
   @Override
@@ -291,19 +293,19 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     return orthoY - ((2f * orthoY) / windowHight * y);
   }
 
-  private void transefer() {
+  private void transfer() {
     if (flag == 1) {
       // single player-not implemented
       levels.drawLevels();
     } else if (flag == 2) {
       // new Game();
-      game2.draw();
+      game.draw();
     } else if (flag == 3) {
-      howToPlay2.drawH();
+      howToPlay.draw();
     } else if (flag == 4) {
       // new HighScores();
-      highScores2.printScores();
-    } else if (flag==5) {
+      HighScores.printScores();
+    } else if (flag == 5) {
       System.out.println("level one");
     }
   }
@@ -321,17 +323,17 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
 
     draw(46, 575, -325, 50, 50);
 
-    if (mouseX > -130 && mouseX < 130) {
-      if (mouseY > 200 && mouseY < 300) {
+    if (mouse[0] > -130 && mouse[0] < 130) {
+      if (mouse[1] > 200 && mouse[1] < 300) {
         draw(41, 0, 250);
       }
-      if (mouseY > 50 && mouseY < 150) {
+      if (mouse[1] > 50 && mouse[1] < 150) {
         draw(42, 0, 100);
       }
-      if (mouseY > -100 && mouseY < 0) {
+      if (mouse[1] > -100 && mouse[1] < 0) {
         draw(43, 0, -50);
       }
-      if (mouseY > -250 && mouseY < -150) {
+      if (mouse[1] > -250 && mouse[1] < -150) {
         draw(44, 0, -200);
       }
     }
@@ -350,19 +352,20 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       System.err.println("Error playing sound: " + e.getMessage());
     }
   }
+
   public void drawLevels() {
     draw(46, 0, 100);
     draw(46, 0, -50);
     draw(46, 0, -200);
-      if (mouseX > -130 && mouseX < 130) {
-        if (mouseY > 50 && mouseY < 150) {
-          draw(42, 0, 100);
-        }
-        if (mouseY > -100 && mouseY < 0) {
-          draw(43, 0, -50);
-        }
-        if (mouseY > -250 && mouseY < -150) {
-          draw(44, 0, -200);
+    if (mouse[0] > -130 && mouse[0] < 130) {
+      if (mouse[1] > 50 && mouse[1] < 150) {
+        draw(42, 0, 100);
+      }
+      if (mouse[1] > -100 && mouse[1] < 0) {
+        draw(43, 0, -50);
+      }
+      if (mouse[1] > -250 && mouse[1] < -150) {
+        draw(44, 0, -200);
       }
     }
   }

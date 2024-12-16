@@ -1,13 +1,15 @@
+package Pages;
+
 import javax.media.opengl.*;
 import java.io.*;
 import java.util.*;
 
-class HighScores2 {
+public class HighScores {
   final int textures[];
   ArrayList<Score> scores = new ArrayList<>();
   GL gl;
 
-  public HighScores2(GL gl, int[] textures) throws FileNotFoundException {
+  public HighScores(GL gl, int[] textures) throws FileNotFoundException {
     this.gl = gl;
     this.textures = textures;
     getScores();
@@ -73,3 +75,12 @@ class HighScores2 {
   }
 }
 
+class Score {
+  String name;
+  String score;
+
+  public Score(String name, String score) {
+    this.name = name;
+    this.score = score;
+  }
+}

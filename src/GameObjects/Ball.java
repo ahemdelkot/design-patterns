@@ -85,4 +85,9 @@ public class Ball extends GameObjects {
     }
     move = false;
   }
+
+  public void reset() {
+    this.x = 0;
+    this.y = 0;
+  }
 }
