@@ -252,5 +252,6 @@ public class Ball extends GameObjects {
     this.dx = 0;
     this.dy = 0;
     this.scoreAdded = false;
+    this.move = true;
   }
 }
