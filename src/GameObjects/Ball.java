@@ -4,7 +4,7 @@ import javax.media.opengl.*;
 
 
 public class Ball extends GameObjects {
-  public double m = 1, dx = 0, dy = 0;
+  public double  dx = 0, dy = 0;
   private boolean move = true;
   private Hand handRight;
   private Hand handLeft;
@@ -26,7 +26,7 @@ public class Ball extends GameObjects {
 
   public void draw() {
     super.draw();
-    // checkCollapse();
+//     checkCollapse();
     checkCollide();
     move();
     checkWinner();
@@ -120,10 +120,10 @@ public class Ball extends GameObjects {
       if (x - handRight.x == 0) {
         if (y < handRight.y) {
           dx = 0;
-          dy = 10;
+          dy = -10;
         } else {
           dx = 0;
-          dy = -10;
+          dy = 10;
         }
       } else if (y - handRight.y == 0) {
         if (x < handRight.x) {
@@ -136,16 +136,10 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handRight.x - this.x > 0 ? -1 : 1;
         int p2 = handRight.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan((y - handRight.y) / (x - handRight.x));
+        double angle = Math.atan(-1*(y - handRight.y) / (x - handRight.x));
 
-        if (x < handRight.x) {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-
-        } else {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-        }
+        dx = p1 * Math.abs(Math.cos(angle) * 10);
+        dy = p2 * Math.abs(Math.sin(angle) * 10);
       }
       flag2 = false;
     }
@@ -154,10 +148,10 @@ public class Ball extends GameObjects {
         // check if the ball hit the player from behind
         if (y < handLeft.y) {
           dx = 0;
-          dy = 10;
+          dy = -10;
         } else {
           dx = 0;
-          dy = -10;
+          dy = 10;
         }
       } else if (y - handLeft.y == 0) {
         if (x < handLeft.x) {
@@ -170,15 +164,9 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handLeft.x - this.x > 0 ? -1 : 1;
         int p2 = handLeft.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan((y - handLeft.y) / (x - handLeft.x));
-        if (x < handLeft.x) {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-
-        } else {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-        }
+        double angle = Math.atan(-1*(y - handLeft.y) / (x - handLeft.x));
+        dx = p1 * Math.abs(Math.cos(angle) * 10);
+        dy = p2 * Math.abs(Math.sin(angle) * 10);
       }
       flag3 = false;
     }
