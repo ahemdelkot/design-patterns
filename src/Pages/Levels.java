@@ -10,13 +10,31 @@ public class Levels {
   int index;
   int textures[];
   GL gl;
+  int[] mouse;
+  Game game;
+  public int levelChosen;
+  UserName userName;
+  int[] flag;
 
-  public Levels(int[] textures, GL gl) throws FileNotFoundException {
+  public Levels(int[] textures, int[] mouse, int[] flag, UserName userName, Game game, GL gl) throws FileNotFoundException {
     this.textures = textures;
     this.gl = gl;
+    this.mouse = mouse;
+    this.game = game;
+    this.userName = userName;
+    this.flag = flag;
   }
 
-  public void drawLevels() {
+  public void draw() {
+    if (levelChosen == 0) {
+      drawLevels();
+    }
+    else {
+      flag[0] = 5;
+    }
+  }
+
+  private void drawLevels() {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     drawBackGround();
     String heading = "levels";
@@ -29,11 +47,28 @@ public class Levels {
       x += 40;
     }
 
+    // easy button
     draw(46, 0, 100, 260, 100);
-
+    
+    // medium button
     draw(46, 0, -50, 260, 100);
-
+    
+    //  button
     draw(46, 0, -200, 260, 100);
+
+    // handle hover mouse
+    if (mouse[0] > -130 && mouse[0] < 130) {
+      if (mouse[1] > 50 && mouse[1] < 150) {
+        draw(42, 0, 100, 260, 100);
+      }
+      if (mouse[1] > -100 && mouse[1] < 0) {
+        draw(43, 0, -50, 260, 100);
+      }
+      if (mouse[1] > -250 && mouse[1] < -150) {
+        draw(44, 0, -200, 260, 100);
+      }
+    }
+    
     // back button
     draw(37, -575, 325, 50, 50);
   }
@@ -42,7 +77,7 @@ public class Levels {
     draw(index, x, y, 40, 40);
   }
 
-  public void drawBackGround() {
+  private void drawBackGround() {
     draw(40, 0, 0, 1200, 700);
   }
 
