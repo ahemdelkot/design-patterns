@@ -2,10 +2,11 @@ package Pages;
 import javax.media.opengl.GL;
 
 public class Timer {
-  GL gl;
-  int[] textures;
+  private GL gl;
+  private int[] textures;
   private int timer, fps;
   private int idx1 = 0, idx2 = 0, idx3 = 0, idx4 = 0;
+  private boolean addFlag = true;
 
   public Timer(int fps, int[] textures, GL gl) {
     this.gl = gl;
@@ -14,7 +15,7 @@ public class Timer {
   }
 
   public void add() {
-    timer++;
+    if(addFlag) timer++;
     setTime();
   }
 
@@ -61,6 +62,10 @@ public class Timer {
     gl.glEnd();
 
     gl.glDisable(GL.GL_BLEND);
+  }
+
+  public void stop() {
+    addFlag = false;
   }
 
   public void reset() {
