@@ -1,7 +1,6 @@
 package Pages;
 import java.awt.event.*;
 import javax.media.opengl.*;
-
 import GameObjects.Ball;
 import GameObjects.Hand;
 import java.util.BitSet;
@@ -14,10 +13,11 @@ public class Game {
   boolean[] mouseClicked;
 
   Hand handRight, handLeft;
-  Ball ball;
   Timer timer;
+  Ball ball;
+  
 
-  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked,BitSet keyBits) {
+  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked, BitSet keyBits) {
     this.gl = gl;
     this.textures = textures;
     this.keyBits = keyBits;
@@ -25,8 +25,9 @@ public class Game {
     this.mouseClicked = mouseClicked;
     handRight = new Hand(textures[39], 440, 0, true, textures, gl,false);
     handLeft = new Hand(textures[39], -440, 0, false, textures, gl,true);
-    ball = new Ball(textures, 0, 0, handRight, handLeft, gl);
     timer = new Timer(60, textures, gl);
+    ball = new Ball(textures, 0, 0, handRight, handLeft, gl, timer);
+
   }
 
   public void draw() {
