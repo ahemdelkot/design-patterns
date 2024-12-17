@@ -1,9 +1,7 @@
+import java.util.*;
+
 public class App {
-  public static void main(String[] args) throws Exception {
-    // new HowToPlay();
-    // new HighScores();
-    // new Game();
+  public static void main(String[] args) {
     new Home();
-    // new UserName();
   }
 }
