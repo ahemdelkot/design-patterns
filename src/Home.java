@@ -6,6 +6,7 @@ import java.awt.event.*;
 import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.BitSet;
 import javax.sound.sampled.*;
 import Pages.*;
@@ -54,17 +55,20 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final static String[] textureNames = new File(ASSETS_PATH).list();
   TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
-
-  GL gl; // global gl drawable to use in the class
   final int orthoX = 600, orthoY = 350;
   int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag = 0;
+
+  GL gl; // global gl drawable to use in the class
   int[] mouse = new int[2];
   boolean[] mouseClicked = {false};
+  BitSet keyBits = new BitSet(256);
+  ArrayList<Integer> input = new ArrayList<>(7);
+
+  UserName userName;
   HowToPlay howToPlay;
   HighScores HighScores;
   Levels levels;
   Game game;
-  BitSet keyBits = new BitSet(256);
   Clip clip; // Global clip to manage background music
 
   public HomeEventListener(Clip clip) {
@@ -105,6 +109,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       HighScores = new HighScores(gl, textures);
       levels = new Levels(textures, gl);
       game = new Game(gl, textures, mouse, mouseClicked, keyBits);
+      userName = new UserName(gl, input, textures);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
     }
@@ -127,6 +132,8 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         drawLevels();
       }
     }
+
+    userName.printInput();
   }
 
   private void draw(int index, double x, double y) {
@@ -265,7 +272,17 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
 
   @Override
   public void keyTyped(KeyEvent e) {
-
+    int ch = e.getKeyChar();
+    int backSpaceCode = 8;
+    System.out.println(ch);
+    System.out.println("keyFuckenTyped");
+    if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
+        input.add(ch - 'a' + 10);
+      System.out.println(input);
+    } else if(ch == backSpaceCode && input.size() > 0){
+        input.remove(input.size() - 1);
+      System.out.println(input);
+    }
   }
 
   @Override
