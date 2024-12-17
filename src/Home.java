@@ -220,6 +220,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
             System.out.println("level 1");
             levels.levelChosen = 1;
             userName.takeingInput = true;
+
           }
           if (mouse[1] > -100 && mouse[1] < 0) {
             System.out.println("level 2");
@@ -232,6 +233,10 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
             userName.takeingInput = true;
           }
         }
+      }
+
+      if (flag[0] == 2) {
+        game.setBot(levels.levelChosen);
       }
     }
   }
