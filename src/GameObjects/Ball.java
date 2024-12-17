@@ -25,29 +25,39 @@ public class Ball extends GameObjects {
     checkCollide();
     move();
     checkWinner();
+
   }
 
   public void move() {
     if (!this.move)
       return;
-
     super.x += dx;
     super.y += dy;
+    moveTo();
+    if (handLeft.AI && x <=0){
+      double ddx = (x - handLeft.x) , ddy = (y - handLeft.y);
+      double dis = Math.sqrt((ddx*ddx) + (ddy*ddy));
+      handLeft.x += 15 * Math.atan(ddx/dis);
+      handLeft.y += 15 * Math.atan(ddy/dis);
+
+    }
+
   }
 
-  public void moveTo(double x, double y) {
-    this.x = x;
-    this.y = y;
+  public void moveTo() {
 
-    if (this.x < -605) this.x = -605;
-    if (this.x > 605) this.x = 605;
+    if (this.x < -530) this.x = -530;
+    if (this.x > 530) this.x = 530;
 
     if (this.y > 280) this.y = 280;
     if (this.y < -280) this.y = -280;
   }
+  boolean intersects(Hand player){
+    double distance = Math.pow(x - player.x, 2) + Math.pow(y - player.y, 2);
+    return distance <= 7000;
+  }
   private void checkCollide() {
-    moveTo(this.x,this.y);
-    if ((super.x >= 605 || super.x <= -605) ){
+    if ((super.x >= 530 || super.x <= -530) ){
       if (y >= 100 || y <= -100) {
         if (left_wallFlag){
           dx = -dx;
@@ -84,83 +94,85 @@ public class Ball extends GameObjects {
 
     double d1 = GameObjects.distance(this, handRight);
     double d2 = GameObjects.distance(this, handLeft);
-//    double ddx = handRight.x-handRight.prev_x;
-//    double ddy = handRight.y-handRight.prev_y;
-//    double dis = Math.sqrt((ddx*ddx)+(ddy*ddy));
     if ((d1 <= 7000 && flag2) ) {
-      double nx = this.x-handRight.x , ny = this.y-handRight.y, mag = Math.sqrt((nx*nx)+(ny*ny));
-      nx/=mag ; ny/=mag;
-      double tan_x = -1*(ny/mag) , tan_y = (nx/mag) ;
-      double v2_n = (5*nx) + (5*ny) , v2_t = (dx*tan_x) + (dy*tan_y) ;
-      dx = -1* Math.max((v2_n*nx) + (v2_t*tan_x),11);
-      dy = Math.max ((v2_n*ny) + (v2_t*tan_y),11);
+      if (x - handRight.x == 0) {
+        if (y < handRight.y) {
+          dx = 0;
+          dy = -10;
+        } else {
+          dx = 0;
+          dy = 10;
+        }
+      } else if (y - handRight.y == 0) {
+        if (x < handRight.x) {
+          dx = -10;
+          dy = 0;
+        } else {
+          dx = 10;
+          dy = 0;
+        }
+      }else{
+        int p1 = handRight.x - this.x > 0?-1:1;
+        int p2 = handRight.y - this.y > 0?-1:1;
+        double angle = Math.atan((y - handRight.y) / (x - handRight.x));
+
+        if (x < handRight.x) {
+          dx = p1*(Math.cos(angle) * 10);
+          dy = p2*(Math.sin(angle) * 10);
+
+        } else {
+          dx =  p1*(Math.cos(angle) * 10);
+          dy = p2* (Math.sin(angle) * 10);
+        }
+      }
       flag2 = false;
-      System.out.println(nx + " "+ ny+" "+mag);
     }
     if ((d2 <= 7000 && flag3) ) {
-      double nx = this.x-handLeft.x , ny = this.y-handLeft.y, mag = Math.sqrt((nx*nx)+(ny*ny));
-      nx/=mag ; ny/=mag;
-      double tan_x = -1*(ny/mag) , tan_y = (nx/mag) ;
-      double v2_n = (5*nx) + (5*ny) , v2_t = (dx*tan_x) + (dy*tan_y) ;
-      dx =  Math.max((v2_n*nx) + (v2_t*tan_x),11);
-      dy =  -1*Math.max ((v2_n*ny) + (v2_t*tan_y),11);
-//
-//      dx = (v2_n*nx) + (v2_t*tan_x);
-//      dy = (v2_n*ny) + (v2_t*tan_y);
+      if (x - handLeft.x == 0) {
+        //check if the ball hit the player from behind
+        if (y < handLeft.y) {
+          dx = 0;
+          dy = -10;
+        } else {
+          dx = 0;
+          dy = 10;
+        }
+      } else if (y - handLeft.y == 0) {
+        if (x < handLeft.x) {
+          dx = -10;
+          dy = 0;
+        } else {
+          dx = 10;
+          dy = 0;
+        }
+      }else{
+        int p1 = handLeft.x - this.x > 0?-1:1;
+        int p2 = handLeft.y - this.y > 0?-1:1;
+        double angle = Math.atan((y - handLeft.y) / (x - handLeft.x));
+        if (x < handLeft.x) {
+          dx = p1*(Math.cos(angle) * 10);
+          dy = p2*(Math.sin(angle) * 10);
+
+        } else {
+          dx =  p1*(Math.cos(angle) * 10);
+          dy = p2*(Math.sin(angle) * 10);
+        }
+      }
       flag3 = false;
     }
     if (d1 > 7000){
       flag2 = true;
     }else{
-//      x += dx;
-//      y +=dy;
-
       dy*=1.1;
       dx*=1.1;
     }
     if (d2 > 7000){
       flag3 = true;
     }else{
-//      x += dx;
-//      y += dy;
       dy*=1.1;
       dx*=1.1;
-
     }
-//    double d1 = GameObjects.distance(this, handRight);
-//    double d2 = GameObjects.distance(this, handLeft);
-//    double ddx = handRight.x-handRight.prev_x;
-//    double ddy = handRight.y-handRight.prev_y;
-//    double dis = Math.sqrt((ddx*ddx)+(ddy*ddy));
-//    if ((d1 <= 5000 && flag2) ) {
-//      if (ddy != 0){
-//        int po1 = handRight.y - handRight.prev_y > 0? 1 : -1;
-//        dy = 10* Math.atan(ddy/dis) * po1 ;
-//      }
-//      if (ddx != 0){
-//        int po2 = handRight.x - handRight.prev_y > 0 ? 1: -1;
-//        dx = 10* Math.atan(ddx/dis) * po2 ;
-//      }
-//      flag2 = false;
-//    }
-//    if ((d2 <= 5000 && flag3) ) {
-//      dy = -dy;
-//      dx = -dx;
-//      flag3 = false;
-//    }
-//    if (d1 > 5000){
-//      flag2 = true;
-//    }else{
-//      dy*=1.1;
-//      dx*=1.1;
-//    }
-//    if (d2 > 5000){
-//      flag3 = true;
-//    }else{
-//      dy*=1.1;
-//      dx*=1.1;
-//
-//    }
+
   }
 
   public void checkCollapse(){
