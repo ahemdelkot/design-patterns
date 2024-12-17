@@ -1,14 +1,18 @@
+// graphics packages
 import javax.media.opengl.*;
 import javax.swing.*;
 import com.sun.opengl.util.*;
 import java.awt.*;
 import java.awt.event.*;
-import Texture.TextureReader;
 import javax.media.opengl.glu.GLU;
+import Texture.TextureReader;
+
+// java packages
 import java.io.*;
-import java.util.ArrayList;
-import java.util.BitSet;
+import java.util.*;
 import javax.sound.sampled.*;
+
+// our own packages
 import Pages.*;
 
 public class Home extends JFrame {
@@ -32,13 +36,14 @@ public class Home extends JFrame {
     glcanvas.addMouseListener(listener);
     glcanvas.addMouseMotionListener(listener);
     getContentPane().add(glcanvas, BorderLayout.CENTER);
+
     Animator animator = new FPSAnimator(60);
     animator.add(glcanvas);
     animator.start();
 
     setTitle("Home");
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    setSize(1200, 700); // ! set size of the window
+    setSize(1200, 700);
     setLocationRelativeTo(null);
     setVisible(true);
     setFocusable(true);
@@ -53,23 +58,24 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
 
   final static String ASSETS_PATH = "Assets\\Sprites";
   final static String[] textureNames = new File(ASSETS_PATH).list();
-  TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
+  final TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
   final int orthoX = 600, orthoY = 350;
-  int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag = 0;
+  int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag[] = {0};
 
   GL gl; // global gl drawable to use in the class
-  int[] mouse = new int[2];
-  boolean[] mouseClicked = {false};
-  BitSet keyBits = new BitSet(256);
-  ArrayList<Integer> input = new ArrayList<>(7);
+  int[] mouse = new int[2]; // tracking mouse position
+  boolean[] mouseClicked = {false}; // tracking mouseClicked
+  BitSet keyBits = new BitSet(256); // tracking keyPressing
+  ArrayList<Integer> input = new ArrayList<>(7); // tracking key inputs for user name
+  String inputUserName;
 
   UserName userName;
   HowToPlay howToPlay;
   HighScores HighScores;
   Levels levels;
   Game game;
-  Clip clip; // Global clip to manage background music
+  Clip clip;
 
   public HomeEventListener(Clip clip) {
       this.clip = clip;
@@ -81,6 +87,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glClearColor(1.0f, 1.0f, 1.0f, 1.0f); // This Will Clear The Background Color To Black
     gl.glOrtho(-orthoX, orthoX, -orthoY, orthoY, -1, 1); // setting the orth and the coordinates of the window
 
+    // set textures
     gl.glEnable(GL.GL_TEXTURE_2D); // Enable Texture Mapping
     gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
     gl.glGenTextures(textureNames.length, textures, 0);
@@ -104,14 +111,17 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         e.printStackTrace();
       }
     }
+
+
+    // initialize the value of the objects
     try {
       howToPlay = new HowToPlay(textures, 36, gl);
       HighScores = new HighScores(gl, textures);
-      levels = new Levels(textures, gl);
       game = new Game(gl, textures, mouse, mouseClicked, keyBits);
       userName = new UserName(gl, input, textures);
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
+      levels = new Levels(textures, mouse, flag, userName, game, gl);
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
@@ -119,28 +129,12 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void display(GLAutoDrawable arg0) {
     // Clear the screen
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
-    // Draw based on the current flag
-    // Home screen
-    if (flag == 0) {
-      drawBackGround();
-      drawHome();
-    } else {
-      transfer();
-      if (flag == 1) {
-        // drawBackGround();
-        drawLevels();
-      }
-    }
-
-    userName.printInput();
+    
+    // displaying the pages based on flag value and button clicked
+    transfer();
   }
 
-  private void draw(int index, double x, double y) {
-    draw(index, x, y, 260, 100);
-  }
-
-  public void drawBackGround() {
+  private void drawBackGround() {
     draw(40, 0, 0, 1200, 700);
   }
 
@@ -163,62 +157,40 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glDisable(GL.GL_BLEND);
   }
 
-  @Override
-  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
-  }
-
-  @Override
-  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
-  }
-
-  @Override
-  public void mouseClicked(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
-
-  @Override
-  public void mouseEntered(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
-
-  @Override
-  public void mouseExited(MouseEvent e) {
-    windowHight = e.getComponent().getHeight();
-    windowWidth = e.getComponent().getWidth();
-  }
 
   @Override
   public void mousePressed(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouse[0] = (int) convertX(e.getX());
-    mouse[1] = (int) convertY(e.getY());
-    mouseClicked[0] = true;
+    mouse[0] = (int) convertX(e.getX()); // set the mouse position
+    mouse[1] = (int) convertY(e.getY()); // set the mouse position
+    mouseClicked[0] = true; // set the mouse clicked
     
-    if (flag == 0) {
+    if (flag[0] == 0) {
       if (mouse[0] > -130 && mouse[0] < 130) {
         if (mouse[1] > 200 && mouse[1] < 300) {
-          flag = 1;
-          playSound("Assets\\sound\\background.wav");
+          flag[0] = 1;
+          playSound("Assets\\sound\\letsGo.wav");
         }
         if (mouse[1] > 50 && mouse[1] < 150) {
-          flag = 2;
-          playSound("Assets\\sound\\background.wav");
+          flag[0] = 2;
+          playSound("Assets\\sound\\letsGo.wav");
         }
         if (mouse[1] > -100 && mouse[1] < 0) {
-          flag = 3;
-          playSound("Assets\\sound\\background.wav");
+          flag[0] = 3;
+          playSound("Assets\\sound\\letsGo.wav");
 
         }
         if (mouse[1] > -250 && mouse[1] < -150) {
-          flag = 4;
-          playSound("Assets\\sound\\background.wav");
+          flag[0] = 4;
+          playSound("Assets\\sound\\letsGo.wav");
         }
       }
+
+      // music button
       if (mouse[1] < -250 && mouse[1] > -350) {
-        if (mouse[0] > 550 && mouse[0] < 600) { // Music on/off
+        if (mouse[0] > 550 && mouse[0] < 600) {
+          // control music when click (music toggle)
           if(clip.isActive()){
             clip.stop();
           } else {
@@ -226,23 +198,45 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
           }
         }
       }
+    } 
 
-    } else if (flag == 3 || flag == 4 || flag == 1 || flag == 2) {
-      if (flag == 1) {
+    /*
+     ? flag[0] 1 for 1 player button
+     ? flag[0] 2 for 2 player button
+     ? flag[0] 3 for How to play button
+     ? flag[0] 4 for HighScores button
+    */
+
+    else if (flag[0] == 1 || flag[0] == 2 || flag[0] == 3 || flag[0] == 4) {
+      // back button
+      if (mouse[0] > -600 && mouse[0] < -550 && mouse[1] > 250 && mouse[1] < 350) {
+        flag[0] = 0;
+        levels.levelChosen = 0;
+      }
+
+      if (flag[0] == 1) {
         if (mouse[0] > -130 && mouse[0] < 130) {
           if (mouse[1] > 50 && mouse[1] < 150) {
             System.out.println("level 1");
+            levels.levelChosen = 1;
+            userName.takeingInput = true;
+
           }
           if (mouse[1] > -100 && mouse[1] < 0) {
             System.out.println("level 2");
+            levels.levelChosen = 2;
+            userName.takeingInput = true;
           }
           if (mouse[1] > -250 && mouse[1] < -150) {
             System.out.println("level 3");
+            levels.levelChosen = 3;
+            userName.takeingInput = true;
           }
         }
       }
-      if (mouse[0] > -600 && mouse[0] < -550 && mouse[1] > 250 && mouse[1] < 350) {
-        flag = 0;
+
+      if (flag[0] == 2) {
+        game.setBot(levels.levelChosen);
       }
     }
   }
@@ -251,37 +245,46 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void mouseReleased(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouseClicked[0] = false;
+
+    mouseClicked[0] = false; // set the mouse clicked
   }
 
   @Override
   public void mouseDragged(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouse[0] = (int) convertX(e.getX());
-    mouse[1] = (int) convertY(e.getY());
+
+    mouse[0] = (int) convertX(e.getX()); // set the mouse position
+    mouse[1] = (int) convertY(e.getY()); // set the mouse position
   }
 
   @Override
   public void mouseMoved(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
     windowWidth = e.getComponent().getWidth();
-    mouse[0] = (int) convertX(e.getX());
-    mouse[1] = (int) convertY(e.getY());
+
+    mouse[0] = (int) convertX(e.getX()); // set the mouse position
+    mouse[1] = (int) convertY(e.getY()); // set the mouse position
   }
 
   @Override
   public void keyTyped(KeyEvent e) {
     int ch = e.getKeyChar();
     int backSpaceCode = 8;
-    System.out.println(ch);
-    System.out.println("keyFuckenTyped");
+
     if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
-        input.add(ch - 'a' + 10);
-      System.out.println(input);
-    } else if(ch == backSpaceCode && input.size() > 0){
-        input.remove(input.size() - 1);
-      System.out.println(input);
+      if (userName.takeingInput) input.add(ch - 'a' + 10);
+    }
+    else if(ch == backSpaceCode && input.size() > 0){
+      if (userName.takeingInput) input.remove(input.size() - 1);
+    }
+
+    if(ch == '\n'){
+      userName.takeingInput = false;
+      for (int i = 0; i < input.size(); i++) {
+        inputUserName += input.get(i);
+      }
+      flag[0] = 2;
     }
   }
 
@@ -306,20 +309,29 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   private void transfer() {
-    if (flag == 1) {
-      // single player-not implemented
-      levels.drawLevels();
-    } else if (flag == 2) {
-      // new Game();
+    if (flag[0] == 0) {
+      // main window page (base case)
+      drawBackGround();
+      drawHome();
+    } else if (flag[0] == 1) {
+      // single player
+      levels.draw();
+    } else if (flag[0] == 2) {
+      // 2 player
       game.draw();
-    } else if (flag == 3) {
+    } else if (flag[0] == 3) {
+      // how to play page
       howToPlay.draw();
-    } else if (flag == 4) {
-      // new HighScores();
+    } else if (flag[0] == 4) {
+      // highScores page
       HighScores.printScores();
-    } else if (flag == 5) {
-      System.out.println("level one");
+    } else if (flag[0] == 5) {
+      userName.printInput();
     }
+  }
+
+  private void draw(int index, double x, double y) {
+    draw(index, x, y, 260, 100);
   }
 
   private void drawHome() {
@@ -351,34 +363,41 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     }
   }
 
-  public void playSound(String filePath) {
+  private void playSound(String filePath) {
     try {
       File soundFile = new File(filePath);
       AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
       Clip clip = AudioSystem.getClip();
       clip.open(audioStream);
-      // clip.loop(Clip.LOOP_CONTINUOUSLY); // don't loop
-      // music
       clip.start();
     } catch (Exception e) {
       System.err.println("Error playing sound: " + e.getMessage());
     }
   }
 
-  public void drawLevels() {
-    draw(46, 0, 100);
-    draw(46, 0, -50);
-    draw(46, 0, -200);
-    if (mouse[0] > -130 && mouse[0] < 130) {
-      if (mouse[1] > 50 && mouse[1] < 150) {
-        draw(42, 0, 100);
-      }
-      if (mouse[1] > -100 && mouse[1] < 0) {
-        draw(43, 0, -50);
-      }
-      if (mouse[1] > -250 && mouse[1] < -150) {
-        draw(44, 0, -200);
-      }
-    }
+  @Override
+  public void displayChanged(GLAutoDrawable arg0, boolean arg1, boolean arg2) {
+  }
+
+  @Override
+  public void reshape(GLAutoDrawable arg0, int arg1, int arg2, int arg3, int arg4) {
+  }
+
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseEntered(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
+  }
+
+  @Override
+  public void mouseExited(MouseEvent e) {
+    windowHight = e.getComponent().getHeight();
+    windowWidth = e.getComponent().getWidth();
   }
 }

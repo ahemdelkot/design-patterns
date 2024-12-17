@@ -23,8 +23,8 @@ public class Game {
     this.keyBits = keyBits;
     this.mouse = mouse;
     this.mouseClicked = mouseClicked;
-    handRight = new Hand(textures[39], 440, 0, true, textures, gl,false);
-    handLeft = new Hand(textures[39], -440, 0, false, textures, gl,true);
+    handRight = new Hand(textures[39], 440, 0, true, textures, gl);
+    handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
     timer = new Timer(60, textures, gl);
     ball = new Ball(textures, 0, 0, handRight, handLeft, gl, timer);
 
@@ -45,6 +45,11 @@ public class Game {
 
   public void drawBackground() {
     draw(37, 0, 0, 1200, 700);
+  }
+
+  public void setBot(int level) {
+    handLeft.level = level;
+    handLeft.AI = true;
   }
 
   public void draw(int index, double x, double y, double width, double height) {

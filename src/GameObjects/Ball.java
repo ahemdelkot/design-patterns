@@ -4,12 +4,14 @@ import javax.media.opengl.*;
 
 
 public class Ball extends GameObjects {
-  public double m = 1, dx = 0, dy = 0;
+  public double  dx = 0, dy = 0;
   private boolean move = true;
   private Hand handRight;
   private Hand handLeft;
   boolean flag, flag2 = true, flag3 = true, up_wallFlag = true, left_wallFlag = true;
   int[] textures;
+  int[] levels = {5,5,7,9};
+
   Pages.Timer timer;
 
   public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, GL gl, Pages.Timer timer) {
@@ -24,7 +26,7 @@ public class Ball extends GameObjects {
 
   public void draw() {
     super.draw();
-    // checkCollapse();
+//     checkCollapse();
     checkCollide();
     move();
     checkWinner();
@@ -39,13 +41,31 @@ public class Ball extends GameObjects {
 
     moveTo();
 
-    if (handLeft.AI && x <= 0) {
-      double ddx = (x - handLeft.x), ddy = (y - handLeft.y);
-      double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
-      handLeft.x += 15 * Math.atan(ddx / dis);
-      handLeft.y += 15 * Math.atan(ddy / dis);
+    if (handLeft.AI ) {
+      if (x <= 0){
+        double ddx = (x - handLeft.x), ddy = (y - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }else if (handLeft.level <= 2 ){
+        if (handLeft.x <= -300 && handLeft.y == 0)return;
+        double ddx = (-440 - handLeft.x), ddy = (0 - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }else{
+        if (handLeft.x <= -150 && handLeft.y == 0)return;
+        double ddx = (-350 - handLeft.x), ddy = (0 - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }
     }
   }
+
 
   public void moveTo() {
     if (this.x < -530)
@@ -59,10 +79,6 @@ public class Ball extends GameObjects {
       this.y = -280;
   }
 
-  boolean intersects(Hand player) {
-    double distance = Math.pow(x - player.x, 2) + Math.pow(y - player.y, 2);
-    return distance <= 7000;
-  }
 
   private void checkCollide() {
     if ((super.x >= 530 || super.x <= -530)) {
@@ -120,16 +136,10 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handRight.x - this.x > 0 ? -1 : 1;
         int p2 = handRight.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan((y - handRight.y) / (x - handRight.x));
+        double angle = Math.atan(-1*(y - handRight.y) / (x - handRight.x));
 
-        if (x < handRight.x) {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-
-        } else {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-        }
+        dx = p1 * Math.abs(Math.cos(angle) * 10);
+        dy = p2 * Math.abs(Math.sin(angle) * 10);
       }
       flag2 = false;
     }
@@ -154,15 +164,9 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handLeft.x - this.x > 0 ? -1 : 1;
         int p2 = handLeft.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan((y - handLeft.y) / (x - handLeft.x));
-        if (x < handLeft.x) {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-
-        } else {
-          dx = p1 * (Math.cos(angle) * 10);
-          dy = p2 * (Math.sin(angle) * 10);
-        }
+        double angle = Math.atan(-1*(y - handLeft.y) / (x - handLeft.x));
+        dx = p1 * Math.abs(Math.cos(angle) * 10);
+        dy = p2 * Math.abs(Math.sin(angle) * 10);
       }
       flag3 = false;
     }
