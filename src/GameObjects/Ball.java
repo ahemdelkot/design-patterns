@@ -10,6 +10,8 @@ public class Ball extends GameObjects {
   private Hand handLeft;
   boolean flag, flag2 = true, flag3 = true, up_wallFlag = true, left_wallFlag = true;
   int[] textures;
+  int[] levels = {5,5,7,9};
+
   Pages.Timer timer;
 
   public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, GL gl, Pages.Timer timer) {
@@ -39,13 +41,31 @@ public class Ball extends GameObjects {
 
     moveTo();
 
-    if (handLeft.AI && x <= 0) {
-      double ddx = (x - handLeft.x), ddy = (y - handLeft.y);
-      double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
-      handLeft.x += 15 * Math.atan(ddx / dis);
-      handLeft.y += 15 * Math.atan(ddy / dis);
+    if (handLeft.AI ) {
+      if (x <= 0){
+        double ddx = (x - handLeft.x), ddy = (y - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }else if (handLeft.level <= 2 ){
+        if (handLeft.x <= -300 && handLeft.y == 0)return;
+        double ddx = (-440 - handLeft.x), ddy = (0 - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }else{
+        if (handLeft.x <= -150 && handLeft.y == 0)return;
+        double ddx = (-350 - handLeft.x), ddy = (0 - handLeft.y);
+        double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
+        handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
+        handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
+
+      }
     }
   }
+
 
   public void moveTo() {
     if (this.x < -530)
@@ -59,10 +79,6 @@ public class Ball extends GameObjects {
       this.y = -280;
   }
 
-  boolean intersects(Hand player) {
-    double distance = Math.pow(x - player.x, 2) + Math.pow(y - player.y, 2);
-    return distance <= 7000;
-  }
 
   private void checkCollide() {
     if ((super.x >= 530 || super.x <= -530)) {
@@ -104,10 +120,10 @@ public class Ball extends GameObjects {
       if (x - handRight.x == 0) {
         if (y < handRight.y) {
           dx = 0;
-          dy = -10;
+          dy = 10;
         } else {
           dx = 0;
-          dy = 10;
+          dy = -10;
         }
       } else if (y - handRight.y == 0) {
         if (x < handRight.x) {
@@ -138,10 +154,10 @@ public class Ball extends GameObjects {
         // check if the ball hit the player from behind
         if (y < handLeft.y) {
           dx = 0;
-          dy = -10;
+          dy = 10;
         } else {
           dx = 0;
-          dy = 10;
+          dy = -10;
         }
       } else if (y - handLeft.y == 0) {
         if (x < handLeft.x) {

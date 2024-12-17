@@ -17,14 +17,14 @@ public class Game {
   Ball ball;
   
 
-  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked, BitSet keyBits) {
+  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked, BitSet keyBits,int level , boolean AI) {
     this.gl = gl;
     this.textures = textures;
     this.keyBits = keyBits;
     this.mouse = mouse;
     this.mouseClicked = mouseClicked;
-    handRight = new Hand(textures[39], 440, 0, true, textures, gl,false);
-    handLeft = new Hand(textures[39], -440, 0, false, textures, gl,true);
+    handRight = new Hand(textures[39], 440, 0, true, textures, gl,false,0);
+    handLeft = new Hand(textures[39], -440, 0, false, textures, gl,AI,level);
     timer = new Timer(60, textures, gl);
     ball = new Ball(textures, 0, 0, handRight, handLeft, gl, timer);
 

@@ -3,12 +3,13 @@ import javax.media.opengl.*;
 
 public class Hand extends GameObjects{
   Ball ball;
-  public int score;
+  public int score , level;
   public boolean right , AI;
   int[] textures;
 
-  public Hand(int textureIndex, double x, double y, boolean right, int[] textures, GL gl , boolean AI){
+  public Hand(int textureIndex, double x, double y, boolean right, int[] textures, GL gl , boolean AI ,int level){
     super(textureIndex, x, y, gl);
+    this.level = level;
     this.AI = AI;
     this.right = right;
     this.textures = textures;
@@ -77,5 +78,6 @@ public class Hand extends GameObjects{
   public void reset() {
     this.x = right ? 440 : -440;
     this.y = 0;
+    this.score =0;
   }
 }

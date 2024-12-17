@@ -108,7 +108,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       howToPlay = new HowToPlay(textures, 36, gl);
       HighScores = new HighScores(gl, textures);
       levels = new Levels(textures, gl);
-      game = new Game(gl, textures, mouse, mouseClicked, keyBits);
+      game = new Game(gl, textures, mouse, mouseClicked, keyBits,0,false);
       userName = new UserName(gl, input, textures);
     } catch (FileNotFoundException e) {
       throw new RuntimeException(e);
@@ -133,7 +133,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
 
-    userName.printInput();
+//    userName.printInput();
   }
 
   private void draw(int index, double x, double y) {
@@ -232,6 +232,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         if (mouse[0] > -130 && mouse[0] < 130) {
           if (mouse[1] > 50 && mouse[1] < 150) {
             System.out.println("level 1");
+
           }
           if (mouse[1] > -100 && mouse[1] < 0) {
             System.out.println("level 2");
