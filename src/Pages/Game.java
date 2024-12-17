@@ -17,7 +17,7 @@ public class Game {
   Ball ball;
   
 
-  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked, BitSet keyBits) {
+  public Game(GL gl, int[] textures, int[] mouse, boolean[] mouseClicked, String[] playerName, BitSet keyBits) {
     this.gl = gl;
     this.textures = textures;
     this.keyBits = keyBits;
@@ -26,7 +26,7 @@ public class Game {
     handRight = new Hand(textures[39], 440, 0, true, textures, gl);
     handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
     timer = new Timer(60, textures, gl);
-    ball = new Ball(textures, 0, 0, handRight, handLeft, gl, timer);
+    ball = new Ball(textures, 0, 0, handRight, handLeft, playerName, timer, gl);
 
   }
 
@@ -111,5 +111,10 @@ public class Game {
     handLeft.reset();
     handRight.reset();
     ball.reset();
+  }
+
+  public void start() {
+    ball.move = true;
+    timer.start();
   }
 }

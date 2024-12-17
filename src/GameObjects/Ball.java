@@ -1,24 +1,23 @@
 package GameObjects;
 
 import javax.media.opengl.*;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.File;
-
+import java.io.*;
+import java.util.Scanner;
 
 public class Ball extends GameObjects {
-  public double  dx = 0, dy = 0;
-  private boolean move = true;
+  public double dx = 0, dy = 0;
+  public boolean move = true;
   private Hand handRight;
   private Hand handLeft;
-  boolean flag, flag2 = true, flag3 = true, up_wallFlag = true, left_wallFlag = true;
+  String[] playerName;
+  boolean flag, flag2 = true, flag3 = true, up_wallFlag = true, left_wallFlag = true, scoreAdded = false;
   int[] textures;
-  int[] levels = {5,5,7,9};
+  int[] levels = { 5, 5, 7, 9 };
 
   Pages.Timer timer;
 
-  public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, GL gl, Pages.Timer timer) {
+  public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, String[] playerName, Pages.Timer timer,
+      GL gl) {
     super(textures[38], x, y, gl);
     this.textures = textures;
     this.handRight = handRight;
@@ -26,11 +25,12 @@ public class Ball extends GameObjects {
     handRight.ball = this;
     handLeft.ball = this;
     this.timer = timer;
+    this.playerName = playerName;
   }
 
   public void draw() {
     super.draw();
-//     checkCollapse();
+    // checkCollapse();
     checkCollide();
     move();
     checkWinner();
@@ -38,29 +38,32 @@ public class Ball extends GameObjects {
   }
 
   public void move() {
-    if (!this.move) return;
+    if (!this.move)
+      return;
 
     super.x += dx;
     super.y += dy;
 
     moveTo();
 
-    if (handLeft.AI ) {
-      if (x <= 0){
+    if (handLeft.AI) {
+      if (x <= 0) {
         double ddx = (x - handLeft.x), ddy = (y - handLeft.y);
         double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
         handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
         handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
 
-      }else if (handLeft.level <= 2 ){
-        if (handLeft.x <= -300 && handLeft.y == 0)return;
+      } else if (handLeft.level <= 2) {
+        if (handLeft.x <= -300 && handLeft.y == 0)
+          return;
         double ddx = (-440 - handLeft.x), ddy = (0 - handLeft.y);
         double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
         handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
         handLeft.y += levels[handLeft.level] * Math.atan(ddy / dis);
 
-      }else{
-        if (handLeft.x <= -150 && handLeft.y == 0)return;
+      } else {
+        if (handLeft.x <= -150 && handLeft.y == 0)
+          return;
         double ddx = (-350 - handLeft.x), ddy = (0 - handLeft.y);
         double dis = Math.sqrt((ddx * ddx) + (ddy * ddy));
         handLeft.x += levels[handLeft.level] * Math.atan(ddx / dis);
@@ -69,7 +72,6 @@ public class Ball extends GameObjects {
       }
     }
   }
-
 
   public void moveTo() {
     if (this.x < -530)
@@ -82,7 +84,6 @@ public class Ball extends GameObjects {
     if (this.y < -280)
       this.y = -280;
   }
-
 
   private void checkCollide() {
     if ((super.x >= 530 || super.x <= -530)) {
@@ -140,7 +141,7 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handRight.x - this.x > 0 ? -1 : 1;
         int p2 = handRight.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan(-1*(y - handRight.y) / (x - handRight.x));
+        double angle = Math.atan(-1 * (y - handRight.y) / (x - handRight.x));
 
         dx = p1 * Math.abs(Math.cos(angle) * 10);
         dy = p2 * Math.abs(Math.sin(angle) * 10);
@@ -168,7 +169,7 @@ public class Ball extends GameObjects {
       } else {
         int p1 = handLeft.x - this.x > 0 ? -1 : 1;
         int p2 = handLeft.y - this.y > 0 ? -1 : 1;
-        double angle = Math.atan(-1*(y - handLeft.y) / (x - handLeft.x));
+        double angle = Math.atan(-1 * (y - handLeft.y) / (x - handLeft.x));
         dx = p1 * Math.abs(Math.cos(angle) * 10);
         dy = p2 * Math.abs(Math.sin(angle) * 10);
       }
@@ -204,13 +205,45 @@ public class Ball extends GameObjects {
     for (int i = 0, y = 0; i < heading.length(); i++) {
       char ch = heading.charAt(i);
       if (ch != ' ') {
-        draw(textures[ch - 'a' + 10], x, y, 40, 40);
+        draw(textures[ch - 'a' + 10], x, y, ch != 'i' ? 40 : 10, 40);
       }
 
       x += 40;
     }
     move = false;
     timer.stop();
+
+    // using handLeft boolean ai variable to know if the game in 1-player or
+    // 2-player mode cause score will be added only in the 1-player mode
+    if (!handLeft.AI)
+      return;
+
+    // check if we already added the score to the file 
+    if (scoreAdded)
+      return;
+    
+    // add in the winner score to the file
+    try {
+      // taking the exists high scores from the file
+      File file = new File("data\\score.txt");
+      Scanner in = new Scanner(file);
+      String str = "";
+      while (in.hasNext()) {
+        str += in.nextLine() + '\n';
+      }
+      in.close();
+
+      // update the high scores to the new player
+      int score = 1000 - timer.getSeconds() * 5;
+      str += playerName[0] + " " + score;
+      PrintWriter print = new PrintWriter(file);
+      print.print(str);
+      print.close();
+      scoreAdded = true;
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
+
   }
 
   public void reset() {
@@ -218,16 +251,6 @@ public class Ball extends GameObjects {
     super.y = 0;
     this.dx = 0;
     this.dy = 0;
-  }
-  private void playSound(String filePath) {
-    try {
-      File soundFile = new File(filePath);
-      AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
-      Clip clip = AudioSystem.getClip();
-      clip.open(audioStream);
-      clip.start();
-    } catch (Exception e) {
-      System.err.println("Error playing sound: " + e.getMessage());
-    }
+    this.scoreAdded = false;
   }
 }

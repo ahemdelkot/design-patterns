@@ -8,11 +8,11 @@ public class HighScores {
   final int textures[];
   ArrayList<Score> scores = new ArrayList<>();
   GL gl;
+  public boolean getScores = false;
 
   public HighScores(GL gl, int[] textures) throws FileNotFoundException {
     this.gl = gl;
     this.textures = textures;
-    getScores();
   }
 
   public void draw(int index, double x, double y) {
@@ -45,16 +45,35 @@ public class HighScores {
   }
 
   private void getScores() throws FileNotFoundException {
-    Scanner in = new Scanner(new File("data\\score.txt"));
-    while (in.hasNext()) {
-      scores.add(new Score(in.next(), in.next()));
+    scores.clear();
+    try (Scanner in = new Scanner(new File("data\\score.txt"))) {
+      while (in.hasNext()) {
+        scores.add(new Score(in.next(), in.next()));
+      }
     }
-    in.close();
   }
 
   public void printScores() {
+    if (!getScores) {
+      try {
+        getScores();
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+      getScores = true;
+    }
+
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     draw(40, 0, 0, 1200, 700);
+
+    // using the Quad as a background for "high scores" title
+    gl.glColor3f(1, 1, 1);
+    gl.glBegin(GL.GL_QUADS);
+    gl.glVertex2d(-230, 310);
+    gl.glVertex2d(230, 310);
+    gl.glVertex2d(230, 250);
+    gl.glVertex2d(-230, 250);
+    gl.glEnd();
 
     String heading = "high scores";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
@@ -65,9 +84,13 @@ public class HighScores {
 
       x += 40;
     }
-
-    for (int i = 0, y = 150; i < scores.size(); i++) {
-      // for name printing names
+    /*
+     * sorting the scores objects descending depends on the score value using the
+     * comparator class and lambda expression
+     */
+    Collections.sort(scores, (e1, e2) -> Integer.parseInt(e1.score) > Integer.parseInt(e2.score) ? -1 : 1);
+    for (int i = 0, y = 140; i < scores.size(); i++) {
+      // for name printing
       String name = scores.get(i).name;
       for (int j = 0, x = -240; j < name.length(); j++) {
         char ch = name.charAt(j);
@@ -75,7 +98,7 @@ public class HighScores {
         x += 40;
       }
 
-      // for score printing score
+      // for score printing
       String score = scores.get(i).score;
       for (int j = score.length() - 1, x = 240; j >= 0; j--) {
         char ch = score.charAt(j);

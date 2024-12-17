@@ -38,7 +38,7 @@ public class Levels {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
     drawBackGround();
     String heading = "levels";
-    for (int i = 0, y = 280, x = -100; i < heading.length(); i++) {
+    for (int i = 0, y = 50, x = -100; i < heading.length(); i++) {
       char ch = heading.charAt(i);
       if (ch != ' ') {
         draw(ch - 'a' + 10, x, y);
@@ -48,24 +48,24 @@ public class Levels {
     }
 
     // easy button
-    draw(50, 0, 100, 260, 100);
+    draw(50, -300, -50, 260, 100);
     
     // medium button
     draw(51, 0, -50, 260, 100);
     
     //  button
-    draw(52, 0, -200, 260, 100);
+    draw(52, 300, -50, 260, 100);
 
     // handle hover mouse
-    if (mouse[0] > -130 && mouse[0] < 130) {
-      if (mouse[1] > 50 && mouse[1] < 150) {
-        draw(53, 0, 100, 260, 100);
+    if (mouse[1] < 0 && mouse[1] > -100) {
+      if (mouse[0] > -430 && mouse[0] < -170) {
+        draw(53, -300, -50, 260, 100);
       }
-      if (mouse[1] > -100 && mouse[1] < 0) {
+      if (mouse[0] > -130 && mouse[0] < 130) {
         draw(54, 0, -50, 260, 100);
       }
-      if (mouse[1] > -250 && mouse[1] < -150) {
-        draw(55, 0, -200, 260, 100);
+      if (mouse[0] > 170 && mouse[0] < 430) {
+        draw(55, 300, -50, 260, 100);
       }
     }
     
@@ -74,7 +74,10 @@ public class Levels {
   }
 
   private void draw(int index, double x, double y) {
-    draw(index, x, y, 40, 40);
+    int width = 40;
+    if (index == 1) width = 20;
+    else if (index == 18) width = 10;
+    draw(index, x, y, width, 40);
   }
 
   private void drawBackGround() {

@@ -1,3 +1,4 @@
+
 // graphics packages
 import javax.media.opengl.*;
 import javax.swing.*;
@@ -25,7 +26,7 @@ public class Home extends JFrame {
       clip = AudioSystem.getClip();
       clip.open(audioStream);
       clip.loop(Clip.LOOP_CONTINUOUSLY);
-    } catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -50,7 +51,7 @@ public class Home extends JFrame {
     glcanvas.requestFocus();
 
     // Play background music or sound effect
-    clip.start();
+    // clip.start();
   }
 }
 
@@ -61,24 +62,24 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   final TextureReader.Texture texture[] = new TextureReader.Texture[textureNames.length];
   final int textures[] = new int[textureNames.length];
   final int orthoX = 600, orthoY = 350;
-  int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag[] = {0};
+  int windowWidth = 2 * orthoX, windowHight = 2 * orthoY, flag[] = { 0 };
 
   GL gl; // global gl drawable to use in the class
   int[] mouse = new int[2]; // tracking mouse position
-  boolean[] mouseClicked = {false}; // tracking mouseClicked
+  boolean[] mouseClicked = { false }; // tracking mouseClicked
   BitSet keyBits = new BitSet(256); // tracking keyPressing
   ArrayList<Integer> input = new ArrayList<>(7); // tracking key inputs for user name
-  String inputUserName;
+  String[] playerNameInput = { "" };
 
   UserName userName;
   HowToPlay howToPlay;
-  HighScores HighScores;
+  HighScores highScores;
   Levels levels;
   Game game;
   Clip clip;
 
   public HomeEventListener(Clip clip) {
-      this.clip = clip;
+    this.clip = clip;
   }
 
   @Override
@@ -112,12 +113,11 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       }
     }
 
-
     // initialize the value of the objects
     try {
       howToPlay = new HowToPlay(textures, 36, gl);
-      HighScores = new HighScores(gl, textures);
-      game = new Game(gl, textures, mouse, mouseClicked, keyBits);
+      highScores = new HighScores(gl, textures);
+      game = new Game(gl, textures, mouse, mouseClicked, playerNameInput, keyBits);
       userName = new UserName(gl, input, textures);
       levels = new Levels(textures, mouse, flag, userName, game, gl);
     } catch (Exception e) {
@@ -129,7 +129,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   public void display(GLAutoDrawable arg0) {
     // Clear the screen
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-    
+
     // displaying the pages based on flag value and button clicked
     transfer();
   }
@@ -157,7 +157,6 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     gl.glDisable(GL.GL_BLEND);
   }
 
-
   @Override
   public void mousePressed(MouseEvent e) {
     windowHight = e.getComponent().getHeight();
@@ -165,21 +164,22 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     mouse[0] = (int) convertX(e.getX()); // set the mouse position
     mouse[1] = (int) convertY(e.getY()); // set the mouse position
     mouseClicked[0] = true; // set the mouse clicked
-    
+
     if (flag[0] == 0) {
-      if (mouse[0] > -130 && mouse[0] < 130) {
-        if (mouse[1] > 200 && mouse[1] < 300) {
+      if (mouse[0] > -390 && mouse[0] < -130) {
+        if (mouse[1] > -100 && mouse[1] < 0) {
           flag[0] = 1;
           playSound("Assets\\sound\\letsGo.wav");
         }
-        if (mouse[1] > 50 && mouse[1] < 150) {
+        if (mouse[1] > -250 && mouse[1] < -150) {
           flag[0] = 2;
           playSound("Assets\\sound\\letsGo.wav");
         }
+      } 
+      else if (mouse[0] > 130 && mouse[0] < 390) {
         if (mouse[1] > -100 && mouse[1] < 0) {
           flag[0] = 3;
           playSound("Assets\\sound\\letsGo.wav");
-
         }
         if (mouse[1] > -250 && mouse[1] < -150) {
           flag[0] = 4;
@@ -192,46 +192,51 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         if (mouse[0] > 550 && mouse[0] < 600) {
           // control music when click (music toggle)
           if(clip.isActive()){
-            draw(60, 575, -325, 50, 50);
-            clip.stop();
+          draw(60, 575, -325, 50, 50);
+          clip.stop();
           } else {
-            clip.start();
+          clip.start();
           }
         }
+
+        if (mouse[0] < -550 && mouse[0] > -600) {
+          System.exit(0);
+        }
       }
-    } 
+    }
 
     /*
-     ? flag[0] 1 for 1 player button
-     ? flag[0] 2 for 2 player button
-     ? flag[0] 3 for How to play button
-     ? flag[0] 4 for HighScores button
-    */
+      ? flag[0] = 1 for 1 player button
+      ? flag[0] = 2 for 2 player button
+      ? flag[0] = 3 for How to play button
+      ? flag[0] = 4 for HighScores button
+     */
 
     else if (flag[0] == 1 || flag[0] == 2 || flag[0] == 3 || flag[0] == 4) {
       // back button
       if (mouse[0] > -600 && mouse[0] < -550 && mouse[1] > 250 && mouse[1] < 350) {
         flag[0] = 0;
         levels.levelChosen = 0;
+        game.reset();
+        if (flag[0] == 4) highScores.getScores = false;
       }
 
       if (flag[0] == 1) {
-        if (mouse[0] > -130 && mouse[0] < 130) {
-          if (mouse[1] > 50 && mouse[1] < 150) {
-            System.out.println("level 1");
+        if (mouse[1] < 0 && mouse[1] > -100) {
+          if (mouse[0] > -430 && mouse[0] < -170) {
             levels.levelChosen = 1;
             userName.takeingInput = true;
-
+            game.start();
           }
-          if (mouse[1] > -100 && mouse[1] < 0) {
-            System.out.println("level 2");
+          if (mouse[0] > -130 && mouse[0] < 130) {
             levels.levelChosen = 2;
             userName.takeingInput = true;
+            game.start();
           }
-          if (mouse[1] > -250 && mouse[1] < -150) {
-            System.out.println("level 3");
+          if (mouse[0] > 170 && mouse[0] < 430) {
             levels.levelChosen = 3;
             userName.takeingInput = true;
+            game.start();
           }
         }
       }
@@ -276,17 +281,21 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
     int ch = e.getKeyChar();
     int backSpaceCode = 8;
 
-    if(ch >= 'a' && ch <= 'z' && input.size() <= 6){
-      if (userName.takeingInput) input.add(ch - 'a' + 10);
-    }
-    else if(ch == backSpaceCode && input.size() > 0){
-      if (userName.takeingInput) input.remove(input.size() - 1);
+    if (ch >= 'a' && ch <= 'z' && input.size() <= 6) {
+      if (userName.takeingInput)
+        input.add(ch - 'a' + 10);
+    } else if (ch == backSpaceCode && input.size() > 0) {
+      if (userName.takeingInput) {
+        input.remove(input.size() - 1);
+      }
     }
 
-    if(ch == '\n'){
+    if (ch == '\n') {
+      if (input.size() == 0) return;
       userName.takeingInput = false;
+      playerNameInput[0] = "";
       for (int i = 0; i < input.size(); i++) {
-        inputUserName += input.get(i);
+        playerNameInput[0] += (char) (input.get(i) + 'a' - 10);
       }
       input.clear();
       flag[0] = 2;
@@ -329,7 +338,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       howToPlay.draw();
     } else if (flag[0] == 4) {
       // highScores page
-      HighScores.printScores();
+      highScores.printScores();
     } else if (flag[0] == 5) {
       userName.printInput();
     }
@@ -340,33 +349,36 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   private void drawHome() {
-    draw(41, 0, 250);
+    draw(41, -260, -50);
 
-    draw(42, 0, 100);
+    draw(42, -260, -200);
 
-    draw(43, 0, -50);
+    draw(43, 260, -50);
 
-    draw(44, 0, -200);
+    draw(44, 260, -200);
 
-    //exit button
+    // exit button
     draw(56, -575, -325, 50, 50);
-    //music button
+    // music button
     draw(59, 575, -325, 50, 50);
 
-    if (mouse[0] > -130 && mouse[0] < 130) {
-      if (mouse[1] > 200 && mouse[1] < 300) {
-        draw(46, 0, 250);
-      }
-      if (mouse[1] > 50 && mouse[1] < 150) {
-        draw(47, 0, 100);
-      }
+    if (mouse[0] > -390 && mouse[0] < -130) {
       if (mouse[1] > -100 && mouse[1] < 0) {
-        draw(48, 0, -50);
+        draw(46, -260, -50);
       }
       if (mouse[1] > -250 && mouse[1] < -150) {
-        draw(49, 0, -200);
+        draw(47, -260, -200);
+      }
+    } 
+    else if (mouse[0] > 130 && mouse[0] < 390) {
+      if (mouse[1] > -100 && mouse[1] < 0) {
+        draw(48, 260, -50);
+      }
+      if (mouse[1] > -250 && mouse[1] < -150) {
+        draw(49, 260, -200);
       }
     }
+
   }
 
   private void playSound(String filePath) {

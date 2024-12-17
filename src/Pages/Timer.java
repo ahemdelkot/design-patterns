@@ -68,6 +68,14 @@ public class Timer {
     addFlag = false;
   }
 
+  public int getSeconds() {
+    return idx1 + idx2 * 10 + idx3 * 60 + idx4 * 10 * 60;
+  }
+
+  public void start() {
+    addFlag = true;
+  }
+
   public void reset() {
     idx1 = 0;
     idx2 = 0;

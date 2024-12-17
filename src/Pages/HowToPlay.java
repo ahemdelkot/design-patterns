@@ -16,6 +16,16 @@ public class HowToPlay {
 
   public void draw() {
     gl.glClear(GL.GL_COLOR_BUFFER_BIT);
+    draw(40, 0, 0, 1200, 700);
+
+    gl.glColor3f(1, 1, 1);
+    gl.glBegin(GL.GL_QUADS);
+    gl.glVertex2d(-230, 310);
+    gl.glVertex2d(230, 310);
+    gl.glVertex2d(230, 250);
+    gl.glVertex2d(-230, 250);
+    gl.glEnd();
+
     String heading = "how to play";
     for (int i = 0, y = 280, x = -200; i < heading.length(); i++) {
       char ch = heading.charAt(i);
@@ -32,7 +42,10 @@ public class HowToPlay {
   }
 
   private void draw(int index, double x, double y) {
-    draw(index, x, y, 40, 40);
+    int width = 40;
+    if (index == 1) width = 10;
+    else if (index == 2) width = 20;
+    draw(index, x, y, width, 40);
   }
 
   private void draw(int index, double x, double y, double width, double height) {

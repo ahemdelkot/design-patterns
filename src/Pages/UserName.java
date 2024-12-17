@@ -18,8 +18,9 @@ public class UserName {
     draw(58, 0, 0, 1200,700);
 
     int x = -150;
-    for (int i : input) {
-      draw(i, x, 0);
+    for (int i = 0; i < 7; i++) {
+      // draw(i, x, 0);
+      draw(i < input.size() ? input.get(i) : 42, x, 0);
 
       x += 45;
     }
@@ -27,7 +28,10 @@ public class UserName {
 
   public void draw(int index, double x, double y) {
     // draw the character
-    draw(index, x, y, 40, 40);
+    int width = 40;
+    if (index == 1) width = 20;
+    else if (index == 18) width = 10;
+    draw(index, x, y, width, 40);
   }
 
   private void draw(int index, double x, double y, double width, double height) {
