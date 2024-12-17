@@ -31,10 +31,16 @@ public class Ball extends GameObjects {
   public void move() {
     if (!this.move)
       return;
-
     super.x += dx;
     super.y += dy;
     moveTo();
+    if (handLeft.AI && x <=0){
+      double ddx = (x - handLeft.x) , ddy = (y - handLeft.y);
+      double dis = Math.sqrt((ddx*ddx) + (ddy*ddy));
+      handLeft.x += 15 * Math.atan(ddx/dis);
+      handLeft.y += 15 * Math.atan(ddy/dis);
+
+    }
 
   }
 

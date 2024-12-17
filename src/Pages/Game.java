@@ -23,8 +23,8 @@ public class Game {
     this.keyBits = keyBits;
     this.mouse = mouse;
     this.mouseClicked = mouseClicked;
-    handRight = new Hand(textures[39], 440, 0, true, textures, gl);
-    handLeft = new Hand(textures[39], -440, 0, false, textures, gl);
+    handRight = new Hand(textures[39], 440, 0, true, textures, gl,false);
+    handLeft = new Hand(textures[39], -440, 0, false, textures, gl,true);
     ball = new Ball(textures, 0, 0, handRight, handLeft, gl);
     timer = new Timer(60, textures, gl);
   }
@@ -82,19 +82,21 @@ public class Game {
     if (isKeyPressed(KeyEvent.VK_DOWN)) {
       handRight.move(0, -10);
     }
+    if (!handLeft.AI){
+      if (isKeyPressed(KeyEvent.VK_A) ) {
+        handLeft.move(-10, 0);
+      }
+      if (isKeyPressed(KeyEvent.VK_D)) {
+        handLeft.move(10, 0);
+      }
+      if (isKeyPressed(KeyEvent.VK_W)) {
+        handLeft.move(0, 10);
+      }
+      if (isKeyPressed(KeyEvent.VK_S)) {
+        handLeft.move(0, -10);
+      }
+    }
 
-    if (isKeyPressed(KeyEvent.VK_A)) {
-      handLeft.move(-10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_D)) {
-      handLeft.move(10, 0);
-    }
-    if (isKeyPressed(KeyEvent.VK_W)) {
-      handLeft.move(0, 10);
-    }
-    if (isKeyPressed(KeyEvent.VK_S)) {
-      handLeft.move(0, -10);
-    }
   }
 
   public void reset() {

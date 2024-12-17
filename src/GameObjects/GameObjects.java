@@ -4,7 +4,7 @@ import javax.media.opengl.*;
 public abstract class GameObjects {
   final int width = 80, height = 80;
   int textureIndex;
-  public double x, y;
+  public double x=0, y=0;
   GL gl;
 
   public GameObjects(int textureIndex, double x, double y, GL gl) {
