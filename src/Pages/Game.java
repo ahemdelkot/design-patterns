@@ -41,6 +41,7 @@ public class Game {
     handLeft.draw();
     handRight.draw();
     if (mouseClicked[0]) handRight.moveTo(mouse[0], mouse[1]);
+    draw(57, -575, 325, 50, 50);
   }
 
   public void drawBackground() {

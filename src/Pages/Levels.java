@@ -48,29 +48,29 @@ public class Levels {
     }
 
     // easy button
-    draw(46, 0, 100, 260, 100);
+    draw(50, 0, 100, 260, 100);
     
     // medium button
-    draw(46, 0, -50, 260, 100);
+    draw(51, 0, -50, 260, 100);
     
     //  button
-    draw(46, 0, -200, 260, 100);
+    draw(52, 0, -200, 260, 100);
 
     // handle hover mouse
     if (mouse[0] > -130 && mouse[0] < 130) {
       if (mouse[1] > 50 && mouse[1] < 150) {
-        draw(42, 0, 100, 260, 100);
+        draw(53, 0, 100, 260, 100);
       }
       if (mouse[1] > -100 && mouse[1] < 0) {
-        draw(43, 0, -50, 260, 100);
+        draw(54, 0, -50, 260, 100);
       }
       if (mouse[1] > -250 && mouse[1] < -150) {
-        draw(44, 0, -200, 260, 100);
+        draw(55, 0, -200, 260, 100);
       }
     }
     
     // back button
-    draw(37, -575, 325, 50, 50);
+    draw(57, -575, 325, 50, 50);
   }
 
   private void draw(int index, double x, double y) {

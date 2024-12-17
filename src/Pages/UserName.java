@@ -15,9 +15,9 @@ public class UserName {
   }
 
   public void printInput() {
-    draw(40, 0, 0, 1200,700);
+    draw(58, 0, 0, 1200,700);
 
-    int x = -200;
+    int x = -150;
     for (int i : input) {
       draw(i, x, 0);
 

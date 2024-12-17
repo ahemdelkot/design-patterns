@@ -28,7 +28,7 @@ public class HowToPlay {
 
     draw(36, 0, -50, 1100, 520);
     // back button
-    draw(37, -575, 325, 50, 50);
+    draw(57, -575, 325, 50, 50);
   }
 
   private void draw(int index, double x, double y) {

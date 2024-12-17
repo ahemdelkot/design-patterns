@@ -84,7 +84,7 @@ public class HighScores {
       }
       y -= 60;
     }
-    draw(37, -575, 325);
+    draw(57, -575, 325);
   }
 }
 

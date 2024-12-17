@@ -192,6 +192,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         if (mouse[0] > 550 && mouse[0] < 600) {
           // control music when click (music toggle)
           if(clip.isActive()){
+            draw(60, 575, -325, 50, 50);
             clip.stop();
           } else {
             clip.start();
@@ -235,8 +236,11 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
         }
       }
 
-      if (flag[0] == 2) {
+      if (flag[0] == 1) {
         game.setBot(levels.levelChosen);
+        if (mouse[0] > -50 && mouse[0] < 50 && mouse[1] > 250 && mouse[1] < 350) {
+          game.reset();
+        }
       }
     }
   }
@@ -284,6 +288,7 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
       for (int i = 0; i < input.size(); i++) {
         inputUserName += input.get(i);
       }
+      input.clear();
       flag[0] = 2;
     }
   }
@@ -335,30 +340,31 @@ class HomeEventListener implements GLEventListener, MouseMotionListener, MouseLi
   }
 
   private void drawHome() {
-    draw(46, 0, 250);
+    draw(41, 0, 250);
 
-    draw(46, 0, 100);
+    draw(42, 0, 100);
 
-    draw(46, 0, -50);
+    draw(43, 0, -50);
 
-    draw(46, 0, -200);
+    draw(44, 0, -200);
 
-    draw(46, -575, -325, 50, 50);
-
-    draw(46, 575, -325, 50, 50);
+    //exit button
+    draw(56, -575, -325, 50, 50);
+    //music button
+    draw(59, 575, -325, 50, 50);
 
     if (mouse[0] > -130 && mouse[0] < 130) {
       if (mouse[1] > 200 && mouse[1] < 300) {
-        draw(41, 0, 250);
+        draw(46, 0, 250);
       }
       if (mouse[1] > 50 && mouse[1] < 150) {
-        draw(42, 0, 100);
+        draw(47, 0, 100);
       }
       if (mouse[1] > -100 && mouse[1] < 0) {
-        draw(43, 0, -50);
+        draw(48, 0, -50);
       }
       if (mouse[1] > -250 && mouse[1] < -150) {
-        draw(44, 0, -200);
+        draw(49, 0, -200);
       }
     }
   }

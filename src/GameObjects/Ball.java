@@ -1,6 +1,10 @@
 package GameObjects;
 
 import javax.media.opengl.*;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
 
 
 public class Ball extends GameObjects {
@@ -212,5 +216,18 @@ public class Ball extends GameObjects {
   public void reset() {
     super.x = 0;
     super.y = 0;
+    this.dx = 0;
+    this.dy = 0;
+  }
+  private void playSound(String filePath) {
+    try {
+      File soundFile = new File(filePath);
+      AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+      Clip clip = AudioSystem.getClip();
+      clip.open(audioStream);
+      clip.start();
+    } catch (Exception e) {
+      System.err.println("Error playing sound: " + e.getMessage());
+    }
   }
 }
