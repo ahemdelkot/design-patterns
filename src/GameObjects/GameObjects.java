@@ -7,6 +7,9 @@ public abstract class GameObjects {
   public double x=0, y=0;
   GL gl;
 
+  public GameObjects(){
+
+  }
   public GameObjects(int textureIndex, double x, double y, GL gl) {
     this.textureIndex = textureIndex;
     this.x = x;

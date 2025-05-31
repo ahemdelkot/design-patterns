@@ -1,5 +1,8 @@
 package GameObjects;
 
+import Observer.Players;
+import Observer.Ruler;
+
 import javax.media.opengl.*;
 import java.io.*;
 import java.util.Scanner;
@@ -14,10 +17,11 @@ public class Ball extends GameObjects {
   int[] textures;
   int[] levels = { 5, 5, 7, 9 };
 
+  Players players ;
+  Ruler ruler = new Ruler();
   Pages.Timer timer;
 
-  public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, String[] playerName, Pages.Timer timer,
-      GL gl) {
+  public Ball(int[] textures, int x, int y, Hand handRight, Hand handLeft, String[] playerName, Pages.Timer timer,GL gl) {
     super(textures[38], x, y, gl);
     this.textures = textures;
     this.handRight = handRight;
@@ -26,6 +30,8 @@ public class Ball extends GameObjects {
     handLeft.ball = this;
     this.timer = timer;
     this.playerName = playerName;
+    players = new Players(textures, timer);
+    ruler.startGame(players);
   }
 
   public void draw() {
@@ -38,7 +44,7 @@ public class Ball extends GameObjects {
   }
 
   public void move() {
-    if (!this.move)
+    if (!players.move)
       return;
 
     super.x += dx;
@@ -101,13 +107,17 @@ public class Ball extends GameObjects {
           y = 0;
           dy = 0;
           dx = 0;
-          handLeft.score++;
+          ruler.increasingPlayer2Score();
+          handLeft.score = ruler.getPlayer2Score() ;
+          System.out.println(ruler.getPlayer2Score());
         } else if (x < 0) {
           x = -90;
           y = 0;
           dy = 0;
           dx = 0;
-          handRight.score++;
+          ruler.increasingPlayer1Score();
+          handRight.score = ruler.getPlayer1Score();
+          System.out.println(ruler.getPlayer1Score());
         }
       }
 
@@ -196,24 +206,24 @@ public class Ball extends GameObjects {
   }
 
   public void checkWinner() {
-    final int SCORE = 5;
-    if (handLeft.score < SCORE && handRight.score < SCORE)
-      return;
+//    final int SCORE = 5;
+//    if (handLeft.score < SCORE && handRight.score < SCORE)
+//      return;
+//
+//    int x = handLeft.score == SCORE ? -360 : 120;
+//    String heading = "you win";
+//    for (int i = 0, y = 0; i < heading.length(); i++) {
+//      char ch = heading.charAt(i);
+//      if (ch != ' ') {
+//        draw(textures[ch - 'a' + 10], x, y, ch != 'i' ? 40 : 10, 40);
+//      }
+//
+//      x += 40;
+//    }
+//    move = false;
+//    timer.stop();
 
-    int x = handLeft.score == SCORE ? -360 : 120;
-    String heading = "you win";
-    for (int i = 0, y = 0; i < heading.length(); i++) {
-      char ch = heading.charAt(i);
-      if (ch != ' ') {
-        draw(textures[ch - 'a' + 10], x, y, ch != 'i' ? 40 : 10, 40);
-      }
-
-      x += 40;
-    }
-    move = false;
-    timer.stop();
-
-    // using handLeft boolean ai variable to know if the game in 1-player or
+    // using handLeft boolean AI variable to know if the game in 1-player or
     // 2-player mode cause score will be added only in the 1-player mode
     if (!handLeft.AI)
       return;
@@ -251,6 +261,7 @@ public class Ball extends GameObjects {
     super.y = 0;
     this.dx = 0;
     this.dy = 0;
+    ruler.reset(players);
     this.scoreAdded = false;
     this.move = true;
   }
