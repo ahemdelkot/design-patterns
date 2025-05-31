@@ -5,7 +5,7 @@ public abstract class GameObjects {
   final int width = 80, height = 80;
   int textureIndex;
   public double x=0, y=0;
-  GL gl;
+  public GL gl;
 
   public GameObjects(){
 

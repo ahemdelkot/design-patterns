@@ -30,7 +30,7 @@ public class Ball extends GameObjects {
     handLeft.ball = this;
     this.timer = timer;
     this.playerName = playerName;
-    players = new Players(textures, timer);
+    players = new Players(textures, timer , gl);
     ruler.startGame(players);
   }
 
